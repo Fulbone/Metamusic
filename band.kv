@@ -1,20 +1,76 @@
 #:kivy 1.11.1
 
-<BandScreen>:
+WindowManager:
+	Comparison:
+	Analysis:
+	Tuner:
+	Metronome:
+
+<ScreenWrapper>:
 	BoxLayout:
+		id: wrapper
 		orientation: 'vertical'
+
 		BoxLayout:
+			id: main
 			orientation: 'vertical'
+			
 			Label:
+				canvas:
+					Color:
+						rgba: 0, 0, 2.55, 1
 				text: 'Main Screen'
+
 		BoxLayout:
+			id: navbar
 			orientation: 'horizontal'
 			size_hint: 1, .1
+
 			Button:
+				id: 0
 				text: 'Comparison'
+				color: 0, 0, 0, 1
+				font_size: 10
+				background_color: 1.25, 2.55, 2.38, 1
+				on_press: root.manager.current = 'comparison'
 			Button:
+				id: 1
 				text: 'Analysis'
+				color: 0, 0, 0, 1
+				font_size: 10
+				background_color: 1.25, 2.55, 2.38, 1
+				on_press: root.manager.current = 'analysis'
 			Button:
+				id: 2
 				text: 'Tuner'
+				color: 0, 0, 0, 1
+				font_size: 10
+				background_color: 1.25, 2.55, 2.38, 1
+				on_press: root.manager.current = 'tuner'
 			Button:
+				id: 3
 				text: 'Met.'
+				color: 0, 0, 0, 1
+				font_size: 10
+				background_color: 1.25, 2.55, 2.38, 1
+				on_press: root.manager.current = 'metronome'
+
+<Comparison>:
+	name: 'comparison'
+	Label:
+		text: 'test 1'
+
+<Analysis>:
+	name: 'analysis'
+	Label:
+		text: 'test 2'
+
+<Tuner>:
+	name: 'tuner'
+	Label:
+		text: 'test 3'
+
+<Metronome>:
+	name: 'metronome'
+	Label:
+		text: 'test 4'
