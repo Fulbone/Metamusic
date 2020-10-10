@@ -14,12 +14,6 @@ WindowManager:
 		BoxLayout:
 			id: main
 			orientation: 'vertical'
-			
-			Label:
-				canvas:
-					Color:
-						rgba: 0, 0, 2.55, 1
-				text: 'Main Screen'
 
 		BoxLayout:
 			id: navbar
@@ -57,20 +51,95 @@ WindowManager:
 
 <Comparison>:
 	name: 'comparison'
-	Label:
-		text: 'test 1'
+	
+	FloatLayout:
+
+		Label:
+			text: 'Enter Sample 1'
+			pos_hint: {'center_x': .5, 'center_y': .8}
+			
+		TextInput: 
+			id: compinput1
+			hint_text: 'Sample 1'
+			pos_hint: {'center_x': .5, 'center_y': .75}
+			size_hint: .25, .05
+
+		Label:
+			text: 'Enter Sample 2'
+			pos_hint: {'center_x': .5, 'center_y': .7}
+
+		TextInput: 
+			id: compinput2
+			hint_text: 'Sample 2'
+			pos_hint: {'center_x': .5, 'center_y': .65}
+			size_hint: .25, .05
+
+		Button:
+			id: compbutton
+			text: "Compare"
+			size_hint: .25, .1
+			pos_hint: {'center_x': .5, 'center_y': .4}
+			on_press: root.get_pitches(compinput1.text, compinput2.text)
 
 <Analysis>:
 	name: 'analysis'
-	Label:
-		text: 'test 2'
+	
+	FloatLayout:
+
+		Label:
+			text: 'Enter the Filename'
+			pos_hint: {'center_x': .5, 'center_y': .75}
+
+		TextInput: 
+			id: analinput
+			hint_text: 'Sample'
+			pos_hint: {'center_x': .5, 'center_y': .7}
+			size_hint: .25, .05
+
+		Button:
+			id: analbutton
+			text: "Analyize"
+			size_hint: .25, .1
+			pos_hint: {'center_x': .5, 'center_y': .4}
+			on_press: root.get_pitch(analinput.text)
+
+		ToggleButton:
+			id: recordanal
+			text: "Record"
+			size_hint: .25, .1
+			pos_hint: {'center_x': .5, 'center_y': .3}
+			on_press: root.record_init(self.state)
 
 <Tuner>:
 	name: 'tuner'
-	Label:
-		text: 'test 3'
+
+	FloatLayout:
+
+		Label:
+			text: 'Tuner Screen'
+			pos_hint: {'center_x': .5, 'center_y': .5}
 
 <Metronome>:
 	name: 'metronome'
-	Label:
-		text: 'test 4'
+
+	FloatLayout:
+
+		Label:
+			text: 'Enter the BPM'
+			pos_hint: {'center_x': .5, 'center_y': .75}
+
+		ToggleButton:
+			id: mettoggle
+			text: 'ON' if self.state == 'down' else 'OFF'
+			size_hint: .25, .1
+			pos_hint: {'center_x': .5, 'center_y': .4}
+			on_press: root.met(self.state, metinput.text)
+
+		TextInput: 
+			id: metinput
+			hint_text: 'BPM'
+			pos_hint: {'center_x': .5, 'center_y': .7}
+			size_hint: .25, .05
+		
+
+
