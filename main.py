@@ -101,13 +101,14 @@ class Analysis(ScreenWrapper, Screen):
 		t.start()
 
 	def record(self, state, chunk=1024, wavformat=pyaudio.paInt16, channels=1, rate=44100, wave_output_filename="output.wav"):
+
 		self.chunk = chunk
 		self.wavformat = wavformat
 		self.channels = channels
 		self.rate = rate
 		self.wave_output_filename = wave_output_filename
-		if self.state == 'down':
 
+		if self.state == 'down':
 			p = pyaudio.PyAudio()
 
 			stream = p.open(format=self.wavformat,
@@ -159,9 +160,9 @@ class Metronome(ScreenWrapper, Screen):
 					raise Exception("Input was not a natural number")
 				else:
 					self.bpm = 60/self.bpm
-					met_event = Clock.schedule_interval(Metronome.playmet, self.bpm)
+					Clock.schedule_interval(Metronome.playmet, self.bpm)
 		else:
-			Clock.unschedule(met_event)
+			Clock.unschedule(Metronome.playmet)
 
 	def playmet(time):
 		playsound('met.wav')
