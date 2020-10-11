@@ -54,6 +54,10 @@ WindowManager:
 	
 	FloatLayout:
 
+		Label: 
+			text: root.compare_text
+			pos_hint: {'center_x': .5, 'center_y': .9}
+
 		Label:
 			text: 'Enter Sample 1'
 			pos_hint: {'center_x': .5, 'center_y': .8}
@@ -79,12 +83,16 @@ WindowManager:
 			text: "Compare"
 			size_hint: .25, .1
 			pos_hint: {'center_x': .5, 'center_y': .4}
-			on_press: root.get_pitches(compinput1.text, compinput2.text)
+			on_press: root.compare_pitch(compinput1.text, compinput2.text)
 
 <Analysis>:
 	name: 'analysis'
 	
 	FloatLayout:
+
+		Label:
+			text: root.pitch_text
+			pos_hint: {'center_x': .5, 'center_y': .85}
 
 		Label:
 			text: 'Enter the Filename'
@@ -116,6 +124,16 @@ WindowManager:
 	FloatLayout:
 
 		Label:
+			text: root.note_text
+			pos_hint: {'center_x': .45, 'center_y': .6}
+			font_size: '32sp'
+
+		Label:
+			text: root.cent_text
+			pos_hint: {'center_x': .55, 'center_y': .6}
+			font_size: '32sp'
+
+		Label:
 			text: 'Tuner Screen'
 			pos_hint: {'center_x': .5, 'center_y': .5}
 
@@ -123,6 +141,11 @@ WindowManager:
 	name: 'metronome'
 
 	FloatLayout:
+
+		Label:
+			text: root.met_text
+			pos_hint: {'center_x': .5, 'center_y': .85}
+			font_size: '20sp'
 
 		Label:
 			text: 'Enter the BPM'
