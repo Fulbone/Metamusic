@@ -5,13 +5,14 @@ from os import path
 import numpy as np 
 import pyaudio
 import wave
+from time import sleep
 from math import log
 from threading import Thread
 import kivy
 kivy.require('1.11.1')
 from kivy.app import App 
 from kivy.uix.screenmanager import ScreenManager, Screen 
-from kivy.properties import StringProperty
+from kivy.properties import StringProperty, NumericProperty
 from kivy.clock import Clock
 from playsound import playsound
 
@@ -28,14 +29,20 @@ class ScreenWrapper(Screen):
 class Comparison(ScreenWrapper, Screen):
 
 	compare_text = StringProperty()
+	scale = StringProperty()
+	scale_text = StringProperty()
+	is_recording = StringProperty()
 
 	def __init__(self, **kwargs):
 		super(Comparison, self).__init__(**kwargs)
-		self.compare_text = "Awaiting Comparison"
+		self.a = Analysis()
+		self.compare_text = "Comparison"
+		self.scale = " "
+		self.scale_text = "None"
+		self.is_recording = "Not "
 
 	# Compares pitches of 2 files using the get pitch method
 	def compare_pitch(self, file1, file2):
-		self.a = Analysis()
 		file1_pitch = self.a.get_pitch(file1)	
 		file2_pitch = self.a.get_pitch(file2)	
 
@@ -44,21 +51,36 @@ class Comparison(ScreenWrapper, Screen):
 			print("\nYou are correct.")
 		else:
 			self.compare_text = "You are incorrect"
-			print("\nYou are incorrect.")	
+			print("\nYou are incorrect.")
 
+	def record_scale(self, state):
+		self.state = state
+		if self.state == 'down':
+			self.is_recording = ""
+			self.t = Thread(target=self.a.record, args=(self, self.state))
+			self.t.daemon = True
+			self.t.start()
+		else:
+			self.is_recording = "Not "
 
 class Analysis(ScreenWrapper, Screen):
 
-	pitch_text = StringProperty()	
+	pitch_text = StringProperty()
+	is_recording = StringProperty()
 
 	def __init__(self, **kwargs):
 		super(Analysis, self).__init__(**kwargs) 
-		self.pitch_text	= "Awaiting Analysis"
+		self.pitch_text	= "Analysis"
+		self.is_recording = "Not "
+
+	def get_pitch_init(self, filename):
+		self.filename = filename
+		self.t = Thread(target=Analysis.get_pitch, args=(self,))
+		self.t.daemon = True
+		self.t.start()
 
 	# Gets the musical notes from a file
-	def get_pitch(self, filename):
-		self.filename = filename
-
+	def get_pitch(self):
 		if path.exists(self.filename) == False:
 			raise Exception(f"File Path to {self.filename} does not exist")
 
@@ -89,7 +111,7 @@ class Analysis(ScreenWrapper, Screen):
 			    pitch_midi = pitch_o(samples)[0]
 			    pitch_midi = int(round(pitch_midi))
 			    confidence = pitch_o.get_confidence()
-			    if confidence < 0.9: pitch_midi = 0.
+			    if confidence < 0.8: pitch_midi = 0.
 			    #print("%f %f %f" % (total_frames / float(samplerate), pitch, confidence))
 			    if len(pitches) == 0 and pitch_midi != 0:
 			    	pitches.append(pitch_midi)
@@ -112,62 +134,68 @@ class Analysis(ScreenWrapper, Screen):
 
 			print(notes)
 			self.pitch_text = str(notes)
-			return notes
+			raise Exception("Thread Terminated")
 
 	# Starts the thread to record from mic
 	def record_init(self, state):
 		self.state = state
-		self.t = Thread(target=Analysis.record, args=(self, self.state))
-		self.t.daemon = True
-		self.t.start()
+		if self.state == 'down': # Checks if the button is in a pressed state
+			self.is_recording = ""
+			self.t = Thread(target=Analysis.record, args=(self,))
+			self.t.daemon = True
+			self.t.start()
+		else:
+			self.is_recording = "Not "
 
 	# Records input from the default mic
-	def record(self, state, chunk=1024, wavformat=pyaudio.paInt16, channels=1, rate=44100, wave_output_filename="output.wav"):
-		self.chunk = chunk
-		self.wavformat = wavformat
-		self.channels = channels
-		self.rate = rate
-		self.wave_output_filename = wave_output_filename
+	def record(self, chunk=1024, wavformat=pyaudio.paInt16, channels=1, rate=44100, wave_output_filename="output.wav"):
+		p = pyaudio.PyAudio()
 
-		if self.state == 'down': # Checks if the button is in a pressed state
-			p = pyaudio.PyAudio()
+		stream = p.open(format=wavformat,
+						channels=channels,
+						rate=rate,
+						input=True,
+						frames_per_buffer=chunk)
 
-			stream = p.open(format=self.wavformat,
-							channels=self.channels,
-							rate=self.rate,
-							input=True,
-							frames_per_buffer=self.chunk)
+		print("Recording...")
 
-			print("Recording...")
+		frames = []
 
-			frames = []
-
-			while self.state == 'down': # Reads data while button is pressed
-				data = stream.read(self.chunk)
+		while self.state == 'down': # Reads data while button is pressed
+				data = stream.read(chunk)
 				frames.append(data)
 
-			print("Done Recording")
+		print("Done Recording")
 
-			stream.close()
-			p.terminate()
+		stream.close()
+		p.terminate()
 
-			wf = wave.open(self.wave_output_filename, 'wb')
-			wf.setnchannels(self.channels)
-			wf.setsampwidth(p.get_sample_size(self.wavformat))
-			wf.setframerate(self.rate)
-			wf.writeframes(b''.join(frames))
-			wf.close()
+		wf = wave.open(wave_output_filename, 'wb')
+		wf.setnchannels(channels)
+		wf.setsampwidth(p.get_sample_size(wavformat))
+		wf.setframerate(rate)
+		wf.writeframes(b''.join(frames))
+		wf.close()
+		raise Exception("Thread Terminated")
 
 
 class Tuner(ScreenWrapper, Screen):
 	
 	note_text = StringProperty()
 	cent_text = StringProperty()
+	posy = NumericProperty()
+	color_red = NumericProperty()
+	color_green = NumericProperty()
+	color_blue = NumericProperty()
 
 	def __init__(self, **kwargs):
 		super(Tuner, self).__init__(**kwargs)
 		self.note_text = " "
 		self.cent_text = " "
+		self.posy = .65
+		self.color_red = 0
+		self.color_green = 0
+		self.color_blue = 0
 
 	# Starts the thread to tune from the mic when the screen is entered
 	def on_enter(self):
@@ -200,14 +228,21 @@ class Tuner(ScreenWrapper, Screen):
 
 			data = stream.read(1024)
 
-			samples = np.fromstring(data, dtype=aubio.float_type)
+			samples = np.frombuffer(data, dtype=aubio.float_type)
 			pitch = pDetection(samples)[0]
 
 			if pitch != 0:
-				pitch_cent = 1200 * round(log(pitch / int(note2freq(freq2note(pitch))), 2), 2)
+				pitch_cent = round(1200 * log(pitch / note2freq(freq2note(pitch)), 2), 2)
 				self.note_text = freq2note(pitch)
 				self.cent_text = str(pitch_cent)
-			print(int(pitch))
+				if pitch_cent < 0:
+					self.posy = .45
+				else:
+					self.posy = .65
+				self.color_red = round((abs(pitch_cent) * .051), 3) 
+				self.color_green = round(((abs(pitch_cent) * -.051) + 2.55), 3)
+				print(f"Green: {self.color_green} Red: {self.color_red}")
+			#print(freq2note(pitch))
 
 		raise Exception("Thread Terminated") # Terminates the thread
 
@@ -215,10 +250,14 @@ class Tuner(ScreenWrapper, Screen):
 class Metronome(ScreenWrapper, Screen):
 	
 	met_text = StringProperty()
+	format_text = StringProperty()
+	met_format = NumericProperty()
 
 	def __init__(self, **kwargs):
 		super(Metronome, self).__init__(**kwargs) 
 		self.met_text = "Metronome OFF"
+		self.format_text = 'None'
+		self.met_format = 4 
 		self.clock = None
 
 	# Schedules the met to be played
@@ -235,16 +274,51 @@ class Metronome(ScreenWrapper, Screen):
 				else:
 					self.bpm = 60/self.bpm
 					self.met_text = "Metronome ON"
-					self.clock = Clock.schedule_interval(Metronome.playmet, self.bpm)
+					self.t = Thread(target=Metronome.playmet, args=(self, self.bpm))
+					self.is_running = True
+					self.t.daemon = True
+					self.t.start()
 
-		# Unschedules the met after the button is toggled off
+		# Kills the thread running the Metronome
 		else:
 			self.met_text = "Metronome OFF"
-			Clock.unschedule(self.clock)
+			self.is_running = False
 
 	# Plays the metronome sound
-	def playmet(dt):
-		playsound('met.wav')
+	def playmet(self, bpm):
+		counter = 0
+		while self.is_running == True:
+			if self.format_text == '2/4':
+				if counter == 0 or counter%2 == 0:
+					playsound('music/highmet.wav')
+				else:
+					playsound('music/lowmet.wav')
+				sleep(bpm)
+			elif self.format_text == '3/4':
+				if counter == 0 or counter%3 == 0:
+					playsound('music/highmet.wav')
+				else:
+					playsound('music/lowmet.wav')
+				sleep(bpm)
+			elif self.format_text == '4/4':
+				if counter == 0 or counter%4 == 0:
+					playsound('music/highmet.wav')
+				else:
+					playsound('music/lowmet.wav')
+				sleep(bpm)
+			elif self.format_text == '6/8':
+				if counter == 0 or counter%6 == 0:
+					playsound('music/highmet.wav')
+				elif counter%3 == 0:
+					playsound('music/met.wav')
+				else:
+					playsound('music/lowmet.wav')
+				sleep(bpm/3)
+			else:
+				pass
+
+			counter += 1
+		raise Exception("Thread Terminated")
 
 
 class BandApp(App):

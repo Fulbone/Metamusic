@@ -56,34 +56,62 @@ WindowManager:
 
 		Label: 
 			text: root.compare_text
-			pos_hint: {'center_x': .5, 'center_y': .9}
+			pos_hint: {'center_x': .5, 'center_y': .85}
+			font_size: '32sp'
 
 		Label:
-			text: 'Enter Sample 1'
-			pos_hint: {'center_x': .5, 'center_y': .8}
-			
-		TextInput: 
-			id: compinput1
-			hint_text: 'Sample 1'
+			text: "Scale: " + root.scale_text
 			pos_hint: {'center_x': .5, 'center_y': .75}
-			size_hint: .25, .05
+			font_size: '32sp'
+
+		Button:
+			text: 'C Scale'
+			pos_hint: {'center_x': .1, 'center_y': .55}
+			size_hint: .2, .1
+			on_press: root.scale_text = "C Scale"
+
+		Button:
+			text: 'D Scale'
+			pos_hint: {'center_x': .3, 'center_y': .55}
+			size_hint: .2, .1
+			on_press: root.scale_text = "D Scale"
+
+		Button:
+			text: 'Eb Scale'
+			pos_hint: {'center_x': .5, 'center_y': .55}
+			size_hint: .2, .1
+			on_press: root.scale_text = "Eb Scale"
+
+		Button:
+			text: 'F Scale'
+			pos_hint: {'center_x': .7, 'center_y': .55}
+			size_hint: .2, .1
+			on_press: root.scale_text = "F Scale"
+
+		Button:
+			text: 'Bb Scale'
+			pos_hint: {'center_x': .9, 'center_y': .55}
+			size_hint: .2, .1
+			on_press: root.scale_text = "Bb Scale"
 
 		Label:
-			text: 'Enter Sample 2'
-			pos_hint: {'center_x': .5, 'center_y': .7}
-
-		TextInput: 
-			id: compinput2
-			hint_text: 'Sample 2'
-			pos_hint: {'center_x': .5, 'center_y': .65}
-			size_hint: .25, .05
+			text: root.is_recording + "Recording"
+			pos_hint: {'center_x': .5, 'center_y': .425}
+			font_size: '32sp'
 
 		Button:
 			id: compbutton
 			text: "Compare"
 			size_hint: .25, .1
-			pos_hint: {'center_x': .5, 'center_y': .4}
-			on_press: root.compare_pitch(compinput1.text, compinput2.text)
+			pos_hint: {'center_x': .35, 'center_y': .3}
+			on_press: root.compare_pitch(root.scale, 'output.wav')
+
+		ToggleButton:
+			text: 'Record Scale'
+			pos_hint: {'center_x': .65, 'center_y': .3}
+			size_hint: .25, .1
+			on_press: root.record_scale(self.state)
+
 
 <Analysis>:
 	name: 'analysis'
@@ -93,6 +121,7 @@ WindowManager:
 		Label:
 			text: root.pitch_text
 			pos_hint: {'center_x': .5, 'center_y': .85}
+			font_size: '32sp'
 
 		Label:
 			text: 'Enter the Filename'
@@ -104,18 +133,23 @@ WindowManager:
 			pos_hint: {'center_x': .5, 'center_y': .7}
 			size_hint: .25, .05
 
+		Label:
+			text: root.is_recording + "Recording"
+			pos_hint: {'center_x': .5, 'center_y': .55}
+			font_size: '32sp'
+
 		Button:
 			id: analbutton
 			text: "Analyize"
 			size_hint: .25, .1
-			pos_hint: {'center_x': .5, 'center_y': .4}
-			on_press: root.get_pitch(analinput.text)
+			pos_hint: {'center_x': .35, 'center_y': .4}
+			on_press: root.get_pitch_init(analinput.text)
 
 		ToggleButton:
 			id: recordanal
 			text: "Record"
 			size_hint: .25, .1
-			pos_hint: {'center_x': .5, 'center_y': .3}
+			pos_hint: {'center_x': .65, 'center_y': .4}
 			on_press: root.record_init(self.state)
 
 <Tuner>:
@@ -125,17 +159,20 @@ WindowManager:
 
 		Label:
 			text: root.note_text
-			pos_hint: {'center_x': .45, 'center_y': .6}
+			pos_hint: {'center_x': .5, 'center_y': .55}
 			font_size: '32sp'
+			color: root.color_red, root.color_green, root.color_blue, 1
 
 		Label:
 			text: root.cent_text
-			pos_hint: {'center_x': .55, 'center_y': .6}
+			pos_hint: {'center_x': .5, 'center_y': root.posy}
 			font_size: '32sp'
+			color: root.color_red, root.color_green, root.color_blue, 1
 
 		Label:
-			text: 'Tuner Screen'
-			pos_hint: {'center_x': .5, 'center_y': .5}
+			text: 'Tuner'
+			pos_hint: {'center_x': .5, 'center_y': .8}
+			font_size: '32sp'
 
 <Metronome>:
 	name: 'metronome'
@@ -145,24 +182,61 @@ WindowManager:
 		Label:
 			text: root.met_text
 			pos_hint: {'center_x': .5, 'center_y': .85}
-			font_size: '20sp'
+			font_size: '32sp'
 
 		Label:
 			text: 'Enter the BPM'
 			pos_hint: {'center_x': .5, 'center_y': .75}
-
-		ToggleButton:
-			id: mettoggle
-			text: 'ON' if self.state == 'down' else 'OFF'
-			size_hint: .25, .1
-			pos_hint: {'center_x': .5, 'center_y': .4}
-			on_press: root.met(self.state, metinput.text)
 
 		TextInput: 
 			id: metinput
 			hint_text: 'BPM'
 			pos_hint: {'center_x': .5, 'center_y': .7}
 			size_hint: .25, .05
+
+		Label:
+			text: 'Format: ' + root.format_text
+			pos_hint: {'center_x': .5, 'center_y': .55}
+			font_size: '32sp'
+
+		Button:
+			text: '2/4'
+			pos_hint: {'center_x': .1, 'center_y': .4}
+			size_hint: .2, .1
+			on_press: root.format_text = '2/4'
+
+		Button:
+			text: '3/4'
+			pos_hint: {'center_x': .3, 'center_y': .4}
+			size_hint: .2, .1
+			on_press: root.format_text = '3/4'
+
+		Button:
+			text: '4/4'
+			pos_hint: {'center_x': .5, 'center_y': .4}
+			size_hint: .2, .1
+			on_press: root.format_text = '4/4'
+
+
+		Button:
+			text: '6/8'
+			pos_hint: {'center_x': .7, 'center_y': .4}
+			size_hint: .2, .1
+			on_press: root.format_text = '6/8'
+
+		Button:
+			text: 'Custom'
+			pos_hint: {'center_x': .9, 'center_y': .4}
+			size_hint: .2, .1
+			on_press: root.format_text = 'Custom'
+
+		ToggleButton:
+			id: mettoggle
+			text: 'ON' if self.state == 'down' else 'OFF'
+			size_hint: .2, .1
+			pos_hint: {'center_x': .5, 'center_y': .25}
+			on_press: root.met(self.state, metinput.text)
+
 		
 
 
