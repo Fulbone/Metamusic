@@ -5,6 +5,7 @@ from os import path
 import numpy as np 
 import pyaudio
 import wave
+import queue
 from time import sleep
 from math import log
 from threading import Thread
@@ -12,10 +13,9 @@ import kivy
 kivy.require('1.11.1')
 from kivy.app import App 
 from kivy.uix.screenmanager import ScreenManager, Screen 
-from kivy.properties import StringProperty, NumericProperty
+from kivy.properties import StringProperty, NumericProperty, BooleanProperty
 from kivy.clock import Clock
 from playsound import playsound
-
 
 # Manager for the screens
 class WindowManager(ScreenManager):
@@ -31,15 +31,31 @@ class Comparison(ScreenWrapper, Screen):
 	compare_text = StringProperty()
 	scale = StringProperty()
 	scale_text = StringProperty()
-	is_recording = StringProperty()
+	is_recording = BooleanProperty()
+	is_sharp = BooleanProperty()
 
 	def __init__(self, **kwargs):
 		super(Comparison, self).__init__(**kwargs)
-		self.a = Analysis()
 		self.compare_text = "Comparison"
-		self.scale = " "
 		self.scale_text = "None"
-		self.is_recording = "Not "
+		self.scale = ""
+		self.is_recording = False
+		self.is_sharp = True
+		self.scale_dict = {
+		"A Scale": ['A', 'B', 'C#', 'D', 'E', 'F#', 'G#', 'A', 'G#', 'F#', 'E', 'D', 'C#', 'B', 'A'],
+		"A# Scale": ['A#', 'C', 'D', 'D#', 'F', 'G', 'A', 'A#', 'A' 'G', 'F', 'D#', 'D', 'C', 'A#'],
+		"B Scale": ['B', 'C#', 'D#', 'E', 'F#', 'G#', 'A#', 'B', 'A#', 'G#', 'F#', 'E', 'D#', 'C#', 'B'],
+		"C Scale": ['C', 'D', 'E', 'F', 'G', 'A', 'B', 'C', 'B', 'A', 'G', 'F', 'E', 'D', 'C'],
+		"C# Scale": ['C#', 'D#', 'F', 'F#', 'G#', 'A#', 'C' 'C#', 'C', 'A#', 'G#', 'F#', 'F', 'D#', 'C#'],
+		"D Scale": ['D', 'E', 'F#', 'G', 'A', 'B', 'C#', 'D', 'C#', 'B', 'A', 'G', 'F#', 'E', 'D'],
+		"D# Scale": ['D#', 'F', 'G', 'G#', 'A#', 'C', 'D', 'D#', 'D', 'C', 'A#', 'G#', 'G', 'F', 'D#'],
+		"E Scale": ['E', 'F#', 'G#', 'A', 'B', 'C#', 'D#', 'E', 'D#', 'C#', 'B', 'A', 'G#', 'F#', 'E'],
+		"F Scale": ['F', 'G', 'A', 'A#', 'C', 'D', 'E', 'F', 'E', 'D', 'C', 'A#', 'A', 'G', 'F'],
+		"F# Scale": ['F#', 'G#', 'A#', 'B', 'C#', 'D#', 'F', 'F#', 'F', 'D#', 'C#', 'B', 'A#', 'G#', 'F#'],
+		"G Scale": ['G', 'A', 'B', 'C', 'D', 'E', 'F#', 'G', 'F#', 'E', 'D', 'C', 'B', 'A', 'G'],
+		"G# Scale": ['G#', 'A#', 'C', 'C#', 'D#', 'F', 'G', 'G#', 'G', 'F', 'D#', 'C#',  'C', 'A#', 'G#'],
+		"A Scale": ['A', 'B', 'C#', 'D', 'E', 'F#', 'G#', 'A', 'G#', 'F#', 'E', 'D', 'C#', 'B', 'A'],
+		}
 
 	# Compares pitches of 2 files using the get pitch method
 	def compare_pitch(self, file1, file2):
@@ -54,24 +70,45 @@ class Comparison(ScreenWrapper, Screen):
 			print("\nYou are incorrect.")
 
 	def record_scale(self, state):
-		self.state = state
-		if self.state == 'down':
-			self.is_recording = ""
-			self.t = Thread(target=self.a.record, args=(self, self.state))
-			self.t.daemon = True
-			self.t.start()
+		if self.scale == "":
+			self.scale_text = "Select a Scale"
 		else:
-			self.is_recording = "Not "
+			self.state = state
+			if self.state == 'down':
+				self.is_recording = True
+				self.q = queue.Queue()
+				self.t = Thread(target=Comparison.record_compare, args=(self,))
+				self.t.daemon = True
+				self.t.start()
+			else:
+				self.is_recording = False
+
+	def record_compare(self):
+		self.gate = True
+		while self.state == 'down':
+			if self.gate == True:
+				Analysis.record_init(self, self.state)
+				self.gate = False
+		Analysis.get_pitch_init(self, 'output.wav')
+		self.notes = self.q.get()
+
+		if self.notes == self.scale_dict[self.scale]:
+			playsound('music/victory.wav')
+		else:
+			print('FUCK NOOOOOOOOOOOO')
+
+	def on_leave(self):
+		self.is_recording = False
 
 class Analysis(ScreenWrapper, Screen):
 
 	pitch_text = StringProperty()
-	is_recording = StringProperty()
+	is_recording = BooleanProperty()
 
 	def __init__(self, **kwargs):
 		super(Analysis, self).__init__(**kwargs) 
 		self.pitch_text	= "Analysis"
-		self.is_recording = "Not "
+		self.is_recording = False
 
 	def get_pitch_init(self, filename):
 		self.filename = filename
@@ -111,7 +148,7 @@ class Analysis(ScreenWrapper, Screen):
 			    pitch_midi = pitch_o(samples)[0]
 			    pitch_midi = int(round(pitch_midi))
 			    confidence = pitch_o.get_confidence()
-			    if confidence < 0.8: pitch_midi = 0.
+			    if confidence < 0.9: pitch_midi = 0.
 			    #print("%f %f %f" % (total_frames / float(samplerate), pitch, confidence))
 			    if len(pitches) == 0 and pitch_midi != 0:
 			    	pitches.append(pitch_midi)
@@ -130,25 +167,28 @@ class Analysis(ScreenWrapper, Screen):
 			notes = []
 			for midi in pitches:
 				note = midi2note(midi)
-				notes += [note]
+				notes.append(note.strip("0123456789"))
 
 			print(notes)
 			self.pitch_text = str(notes)
+			self.q.put(notes)
 			raise Exception("Thread Terminated")
 
 	# Starts the thread to record from mic
 	def record_init(self, state):
 		self.state = state
 		if self.state == 'down': # Checks if the button is in a pressed state
-			self.is_recording = ""
-			self.t = Thread(target=Analysis.record, args=(self,))
+			self.is_recording = True
+			self.t = Thread(target=Analysis.record, args=(self, self.state))
 			self.t.daemon = True
 			self.t.start()
 		else:
-			self.is_recording = "Not "
+			self.is_recording = False
 
 	# Records input from the default mic
-	def record(self, chunk=1024, wavformat=pyaudio.paInt16, channels=1, rate=44100, wave_output_filename="output.wav"):
+	def record(self, state, chunk=1024, wavformat=pyaudio.paInt16, channels=1, rate=44100, wave_output_filename="output.wav"):
+		self.state = state
+
 		p = pyaudio.PyAudio()
 
 		stream = p.open(format=wavformat,
@@ -177,6 +217,9 @@ class Analysis(ScreenWrapper, Screen):
 		wf.writeframes(b''.join(frames))
 		wf.close()
 		raise Exception("Thread Terminated")
+
+	def on_leave(self):
+		self.state = 'up'
 
 
 class Tuner(ScreenWrapper, Screen):

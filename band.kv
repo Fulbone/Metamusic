@@ -65,50 +65,115 @@ WindowManager:
 			font_size: '32sp'
 
 		Button:
+			text: "Sharps"
+			pos_hint: {'center_x': .05, 'center_y': .95}
+			size_hint: .1, .1
+			on_press: root.is_sharp = True
+
+		Button:
+			text: "Flats"
+			pos_hint: {'center_x': .95, 'center_y': .95}
+			size_hint: .1, .1
+			on_press: root.is_sharp = False
+
+		Button:
+			text: 'A Scale'
+			pos_hint: {'center_x': .083, 'center_y': .55}
+			size_hint: .166, .1
+			on_press: root.scale_text = "A Scale"
+			on_press: root.scale = "A Scale"
+
+		Button:
+			text: 'A# Scale' if root.is_sharp == True else 'Bb Scale'
+			pos_hint: {'center_x': .249, 'center_y': .55}
+			size_hint: .166, .1
+			on_press: root.scale_text = "A# Scale"  if root.is_sharp == True else "Bb Scale"
+			on_press: root.scale = "A# Scale"
+
+		Button:
+			text: 'B Scale'
+			pos_hint: {'center_x': .416, 'center_y': .55}
+			size_hint: .166, .1
+			on_press: root.scale_text = "B Scale"
+			on_press: root.scale = "B Scale"
+
+		Button:
 			text: 'C Scale'
-			pos_hint: {'center_x': .1, 'center_y': .55}
-			size_hint: .2, .1
+			pos_hint: {'center_x': .582, 'center_y': .55}
+			size_hint: .166, .1
 			on_press: root.scale_text = "C Scale"
+			on_press: root.scale = "C Scale"
+
+		Button:
+			text: 'C# Scale' if root.is_sharp == True else 'Db Scale'
+			pos_hint: {'center_x': .748, 'center_y': .55}
+			size_hint: .166, .1
+			on_press: root.scale_text = "C# Scale" if root.is_sharp == True else "Db Scale"
+			on_press: root.scale = "C# Scale"
 
 		Button:
 			text: 'D Scale'
-			pos_hint: {'center_x': .3, 'center_y': .55}
-			size_hint: .2, .1
+			pos_hint: {'center_x': .914, 'center_y': .55}
+			size_hint: .166, .1
 			on_press: root.scale_text = "D Scale"
+			on_press: root.scale = "D Scale"
 
 		Button:
-			text: 'Eb Scale'
-			pos_hint: {'center_x': .5, 'center_y': .55}
-			size_hint: .2, .1
-			on_press: root.scale_text = "Eb Scale"
+			text: 'D# Scale' if root.is_sharp == True else 'Eb Scale'
+			pos_hint: {'center_x': .083, 'center_y': .45}
+			size_hint: .166, .1
+			on_press: root.scale_text = "D# Scale"  if root.is_sharp == True else "Eb Scale"
+			on_press: root.scale = "D# Scale"
+
+		Button:
+			text: 'E Scale'
+			pos_hint: {'center_x': .249, 'center_y': .45}
+			size_hint: .166, .1
+			on_press: root.scale_text = "E Scale"
+			on_press: root.scale = "E Scale"
 
 		Button:
 			text: 'F Scale'
-			pos_hint: {'center_x': .7, 'center_y': .55}
-			size_hint: .2, .1
+			pos_hint: {'center_x': .416, 'center_y': .45}
+			size_hint: .166, .1
 			on_press: root.scale_text = "F Scale"
+			on_press: root.scale = "F Scale"
 
 		Button:
-			text: 'Bb Scale'
-			pos_hint: {'center_x': .9, 'center_y': .55}
-			size_hint: .2, .1
-			on_press: root.scale_text = "Bb Scale"
+			text: 'F# Scale' if root.is_sharp == True else 'Gb Scale'
+			pos_hint: {'center_x': .582, 'center_y': .45}
+			size_hint: .166, .1
+			on_press: root.scale_text = "F# Scale" if root.is_sharp == True else "Gb Scale"
+			on_press: root.scale = "F# Scale"
+
+		Button:
+			text: 'G Scale'
+			pos_hint: {'center_x': .748, 'center_y': .45}
+			size_hint: .166, .1
+			on_press: root.scale_text = "G Scale"
+			on_press: root.scale = "G Scale"
+
+		Button:
+			text: 'G# Scale' if root.is_sharp == True else 'Ab Scale'
+			pos_hint: {'center_x': .914, 'center_y': .45}
+			size_hint: .166, .1
+			on_press: root.scale_text = "G# Scale" if root.is_sharp == True else "Ab Scale"
+			on_press: root.scale = "G# Scale"
 
 		Label:
-			text: root.is_recording + "Recording"
-			pos_hint: {'center_x': .5, 'center_y': .425}
+			text: "Recording" if root.is_recording == True else "Not Recording"
+			pos_hint: {'center_x': .5, 'center_y': .35}
 			font_size: '32sp'
 
-		Button:
-			id: compbutton
-			text: "Compare"
-			size_hint: .25, .1
-			pos_hint: {'center_x': .35, 'center_y': .3}
-			on_press: root.compare_pitch(root.scale, 'output.wav')
+		Label:
+			text: "Record and compare to the scale"
+			pos_hint: {'center_x': .5, 'center_y': .3}
+			font_size: '12sp'
 
+			
 		ToggleButton:
-			text: 'Record Scale'
-			pos_hint: {'center_x': .65, 'center_y': .3}
+			text: 'Record'
+			pos_hint: {'center_x': .5, 'center_y': .2}
 			size_hint: .25, .1
 			on_press: root.record_scale(self.state)
 
@@ -134,7 +199,7 @@ WindowManager:
 			size_hint: .25, .05
 
 		Label:
-			text: root.is_recording + "Recording"
+			text: "Recording" if root.is_recording == True else "Not Recording"
 			pos_hint: {'center_x': .5, 'center_y': .55}
 			font_size: '32sp'
 
