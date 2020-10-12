@@ -25,28 +25,28 @@ WindowManager:
 				text: 'Comparison'
 				color: 0, 0, 0, 1
 				font_size: 10
-				background_color: 1.25, 2.55, 2.38, 1
+				background_color: 0, 50.2, 50.2, 1
 				on_press: root.manager.current = 'comparison'
 			Button:
 				id: 1
 				text: 'Analysis'
 				color: 0, 0, 0, 1
 				font_size: 10
-				background_color: 1.25, 2.55, 2.38, 1
+				background_color: 0, 50.2, 50.2, 1
 				on_press: root.manager.current = 'analysis'
 			Button:
 				id: 2
 				text: 'Tuner'
 				color: 0, 0, 0, 1
 				font_size: 10
-				background_color: 1.25, 2.55, 2.38, 1
+				background_color: 0, 50.2, 50.2, 1
 				on_press: root.manager.current = 'tuner'
 			Button:
 				id: 3
 				text: 'Met.'
 				color: 0, 0, 0, 1
 				font_size: 10
-				background_color: 1.25, 2.55, 2.38, 1
+				background_color: 0, 50.2, 50.2, 1
 				on_press: root.manager.current = 'metronome'
 
 <Comparison>:
@@ -56,126 +56,160 @@ WindowManager:
 
 		Label: 
 			text: root.compare_text
+			color: 0, 0, 0, 1
 			pos_hint: {'center_x': .5, 'center_y': .85}
 			font_size: '32sp'
 
 		Label:
 			text: "Scale: " + root.scale_text
+			color: 0, 0, 0, 1
 			pos_hint: {'center_x': .5, 'center_y': .75}
 			font_size: '32sp'
 
 		Button:
 			text: "Sharps"
+			color: 0, 0, 0, 1
 			pos_hint: {'center_x': .05, 'center_y': .95}
 			size_hint: .1, .1
 			on_press: root.is_sharp = True
+			background_color: 0, 50.2, 50.2, 1
 
 		Button:
 			text: "Flats"
+			color: 0, 0, 0, 1
 			pos_hint: {'center_x': .95, 'center_y': .95}
 			size_hint: .1, .1
 			on_press: root.is_sharp = False
+			background_color: 0, 50.2, 50.2, 1
 
 		Button:
 			text: 'A Scale'
+			color: 0, 0, 0, 1
 			pos_hint: {'center_x': .083, 'center_y': .55}
 			size_hint: .166, .1
 			on_press: root.scale_text = "A Scale"
 			on_press: root.scale = "A Scale"
+			background_color: 0, 50.2, 50.2, 1
 
 		Button:
 			text: 'A# Scale' if root.is_sharp == True else 'Bb Scale'
+			color: 0, 0, 0, 1
 			pos_hint: {'center_x': .249, 'center_y': .55}
 			size_hint: .166, .1
 			on_press: root.scale_text = "A# Scale"  if root.is_sharp == True else "Bb Scale"
 			on_press: root.scale = "A# Scale"
+			background_color: 0, 50.2, 50.2, 1
 
 		Button:
 			text: 'B Scale'
+			color: 0, 0, 0, 1
 			pos_hint: {'center_x': .416, 'center_y': .55}
 			size_hint: .166, .1
 			on_press: root.scale_text = "B Scale"
 			on_press: root.scale = "B Scale"
+			background_color: 0, 50.2, 50.2, 1
 
 		Button:
 			text: 'C Scale'
+			color: 0, 0, 0, 1
 			pos_hint: {'center_x': .582, 'center_y': .55}
 			size_hint: .166, .1
 			on_press: root.scale_text = "C Scale"
 			on_press: root.scale = "C Scale"
+			background_color: 0, 50.2, 50.2, 1
 
 		Button:
 			text: 'C# Scale' if root.is_sharp == True else 'Db Scale'
+			color: 0, 0, 0, 1
 			pos_hint: {'center_x': .748, 'center_y': .55}
 			size_hint: .166, .1
 			on_press: root.scale_text = "C# Scale" if root.is_sharp == True else "Db Scale"
 			on_press: root.scale = "C# Scale"
+			background_color: 0, 50.2, 50.2, 1
 
 		Button:
 			text: 'D Scale'
+			color: 0, 0, 0, 1
 			pos_hint: {'center_x': .914, 'center_y': .55}
 			size_hint: .166, .1
 			on_press: root.scale_text = "D Scale"
 			on_press: root.scale = "D Scale"
+			background_color: 0, 50.2, 50.2, 1
 
 		Button:
 			text: 'D# Scale' if root.is_sharp == True else 'Eb Scale'
+			color: 0, 0, 0, 1
 			pos_hint: {'center_x': .083, 'center_y': .45}
 			size_hint: .166, .1
 			on_press: root.scale_text = "D# Scale"  if root.is_sharp == True else "Eb Scale"
 			on_press: root.scale = "D# Scale"
+			background_color: 0, 50.2, 50.2, 1
 
 		Button:
 			text: 'E Scale'
+			color: 0, 0, 0, 1
 			pos_hint: {'center_x': .249, 'center_y': .45}
 			size_hint: .166, .1
 			on_press: root.scale_text = "E Scale"
 			on_press: root.scale = "E Scale"
+			background_color: 0, 50.2, 50.2, 1
 
 		Button:
 			text: 'F Scale'
+			color: 0, 0, 0, 1
 			pos_hint: {'center_x': .416, 'center_y': .45}
 			size_hint: .166, .1
 			on_press: root.scale_text = "F Scale"
 			on_press: root.scale = "F Scale"
+			background_color: 0, 50.2, 50.2, 1
 
 		Button:
 			text: 'F# Scale' if root.is_sharp == True else 'Gb Scale'
+			color: 0, 0, 0, 1
 			pos_hint: {'center_x': .582, 'center_y': .45}
 			size_hint: .166, .1
 			on_press: root.scale_text = "F# Scale" if root.is_sharp == True else "Gb Scale"
 			on_press: root.scale = "F# Scale"
+			background_color: 0, 50.2, 50.2, 1
 
 		Button:
 			text: 'G Scale'
+			color: 0, 0, 0, 1
 			pos_hint: {'center_x': .748, 'center_y': .45}
 			size_hint: .166, .1
 			on_press: root.scale_text = "G Scale"
 			on_press: root.scale = "G Scale"
+			background_color: 0, 50.2, 50.2, 1
 
 		Button:
 			text: 'G# Scale' if root.is_sharp == True else 'Ab Scale'
+			color: 0, 0, 0, 1
 			pos_hint: {'center_x': .914, 'center_y': .45}
 			size_hint: .166, .1
 			on_press: root.scale_text = "G# Scale" if root.is_sharp == True else "Ab Scale"
 			on_press: root.scale = "G# Scale"
+			background_color: 0, 50.2, 50.2, 1
 
 		Label:
 			text: "Recording" if root.is_recording == True else "Not Recording"
+			color: 0, 0, 0, 1
 			pos_hint: {'center_x': .5, 'center_y': .35}
 			font_size: '32sp'
 
 		Label:
 			text: "Record and compare to the scale"
+			color: 0, 0, 0, 1
 			pos_hint: {'center_x': .5, 'center_y': .3}
 			font_size: '12sp'
 
 			
 		ToggleButton:
 			text: 'Record'
+			color: 0, 0, 0, 1
 			pos_hint: {'center_x': .5, 'center_y': .2}
 			size_hint: .25, .1
 			on_press: root.record_scale(self.state)
+			background_color: 0, 50.2, 50.2, 1
 
 
 <Analysis>:
@@ -185,11 +219,13 @@ WindowManager:
 
 		Label:
 			text: root.pitch_text
+			color: 0, 0, 0, 1
 			pos_hint: {'center_x': .5, 'center_y': .85}
 			font_size: '32sp'
 
 		Label:
 			text: 'Enter the Filename'
+			color: 0, 0, 0, 1
 			pos_hint: {'center_x': .5, 'center_y': .75}
 
 		TextInput: 
@@ -200,22 +236,27 @@ WindowManager:
 
 		Label:
 			text: "Recording" if root.is_recording == True else "Not Recording"
+			color: 0, 0, 0, 1
 			pos_hint: {'center_x': .5, 'center_y': .55}
 			font_size: '32sp'
 
 		Button:
 			id: analbutton
-			text: "Analyize"
+			text: "Analyze"
+			color: 0, 0, 0, 1
 			size_hint: .25, .1
 			pos_hint: {'center_x': .35, 'center_y': .4}
 			on_press: root.get_pitch_init(analinput.text)
+			background_color: 0, 50.2, 50.2, 1
 
 		ToggleButton:
 			id: recordanal
 			text: "Record"
+			color: 0, 0, 0, 1
 			size_hint: .25, .1
 			pos_hint: {'center_x': .65, 'center_y': .4}
 			on_press: root.record_init(self.state)
+			background_color: 0, 50.2, 50.2, 1
 
 <Tuner>:
 	name: 'tuner'
@@ -224,18 +265,21 @@ WindowManager:
 
 		Label:
 			text: root.note_text
+			color: 0, 0, 0, 1
 			pos_hint: {'center_x': .5, 'center_y': .55}
 			font_size: '32sp'
 			color: root.color_red, root.color_green, root.color_blue, 1
 
 		Label:
 			text: root.cent_text
+			color: 0, 0, 0, 1
 			pos_hint: {'center_x': .5, 'center_y': root.posy}
 			font_size: '32sp'
 			color: root.color_red, root.color_green, root.color_blue, 1
 
 		Label:
 			text: 'Tuner'
+			color: 0, 0, 0, 1
 			pos_hint: {'center_x': .5, 'center_y': .8}
 			font_size: '32sp'
 
@@ -246,6 +290,7 @@ WindowManager:
 
 		Label:
 			text: root.met_text
+			color: 0, 0, 0, 1
 			pos_hint: {'center_x': .5, 'center_y': .85}
 			font_size: '32sp'
 
@@ -266,41 +311,53 @@ WindowManager:
 
 		Button:
 			text: '2/4'
+			color: 0, 0, 0, 1
 			pos_hint: {'center_x': .1, 'center_y': .4}
 			size_hint: .2, .1
 			on_press: root.format_text = '2/4'
+			background_color: 0, 50.2, 50.2, 1
 
 		Button:
 			text: '3/4'
+			color: 0, 0, 0, 1
 			pos_hint: {'center_x': .3, 'center_y': .4}
 			size_hint: .2, .1
 			on_press: root.format_text = '3/4'
+			background_color: 0, 50.2, 50.2, 1
 
 		Button:
 			text: '4/4'
+			color: 0, 0, 0, 1
 			pos_hint: {'center_x': .5, 'center_y': .4}
 			size_hint: .2, .1
 			on_press: root.format_text = '4/4'
+			background_color: 0, 50.2, 50.2, 1
 
 
 		Button:
 			text: '6/8'
+			color: 0, 0, 0, 1
 			pos_hint: {'center_x': .7, 'center_y': .4}
 			size_hint: .2, .1
 			on_press: root.format_text = '6/8'
+			background_color: 0, 50.2, 50.2, 1
 
 		Button:
 			text: 'Custom'
+			color: 0, 0, 0, 1
 			pos_hint: {'center_x': .9, 'center_y': .4}
 			size_hint: .2, .1
 			on_press: root.format_text = 'Custom'
+			background_color: 0, 50.2, 50.2, 1
 
 		ToggleButton:
 			id: mettoggle
 			text: 'ON' if self.state == 'down' else 'OFF'
+			color: 0, 0, 0, 1
 			size_hint: .2, .1
 			pos_hint: {'center_x': .5, 'center_y': .25}
 			on_press: root.met(self.state, metinput.text)
+			background_color: 0, 50.2, 50.2, 1
 
 		
 

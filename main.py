@@ -16,6 +16,7 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.properties import StringProperty, NumericProperty, BooleanProperty
 from kivy.clock import Clock
 from playsound import playsound
+from kivy.core.window import Window
 
 # Manager for the screens
 class WindowManager(ScreenManager):
@@ -369,6 +370,7 @@ class BandApp(App):
 	def build(self):
 		pass
 
+Window.clearcolor = (1, 1, 1, 1)
 
 if __name__ == '__main__':
 	BandApp().run()
