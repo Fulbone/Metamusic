@@ -13,26 +13,33 @@ import kivy
 kivy.require('1.11.1')
 from kivy.app import App 
 from kivy.uix.screenmanager import ScreenManager, Screen 
-from kivy.properties import StringProperty, NumericProperty, BooleanProperty
+from kivy.properties import StringProperty, NumericProperty, BooleanProperty, ObjectProperty
 from kivy.clock import Clock
 from playsound import playsound
+from kivy.core.window import Window
 
 # Manager for the screens
 class WindowManager(ScreenManager):
 	pass
 		
+
+class TitleScreen(Screen):
+	pass
+
+
 # Wrapper for the screens so that they are all similar
 class ScreenWrapper(Screen):
 	pass
 
 
-class Comparison(ScreenWrapper, Screen):
+class Comparison(ScreenWrapper):
 
 	compare_text = StringProperty()
 	scale = StringProperty()
 	scale_text = StringProperty()
 	is_recording = BooleanProperty()
 	is_sharp = BooleanProperty()
+	is_right = BooleanProperty()
 
 	def __init__(self, **kwargs):
 		super(Comparison, self).__init__(**kwargs)
@@ -41,20 +48,20 @@ class Comparison(ScreenWrapper, Screen):
 		self.scale = ""
 		self.is_recording = False
 		self.is_sharp = True
+		self.is_right = True
 		self.scale_dict = {
-		"A Scale": ['A', 'B', 'C#', 'D', 'E', 'F#', 'G#', 'A', 'G#', 'F#', 'E', 'D', 'C#', 'B', 'A'],
-		"A# Scale": ['A#', 'C', 'D', 'D#', 'F', 'G', 'A', 'A#', 'A' 'G', 'F', 'D#', 'D', 'C', 'A#'],
-		"B Scale": ['B', 'C#', 'D#', 'E', 'F#', 'G#', 'A#', 'B', 'A#', 'G#', 'F#', 'E', 'D#', 'C#', 'B'],
-		"C Scale": ['C', 'D', 'E', 'F', 'G', 'A', 'B', 'C', 'B', 'A', 'G', 'F', 'E', 'D', 'C'],
-		"C# Scale": ['C#', 'D#', 'F', 'F#', 'G#', 'A#', 'C' 'C#', 'C', 'A#', 'G#', 'F#', 'F', 'D#', 'C#'],
-		"D Scale": ['D', 'E', 'F#', 'G', 'A', 'B', 'C#', 'D', 'C#', 'B', 'A', 'G', 'F#', 'E', 'D'],
-		"D# Scale": ['D#', 'F', 'G', 'G#', 'A#', 'C', 'D', 'D#', 'D', 'C', 'A#', 'G#', 'G', 'F', 'D#'],
-		"E Scale": ['E', 'F#', 'G#', 'A', 'B', 'C#', 'D#', 'E', 'D#', 'C#', 'B', 'A', 'G#', 'F#', 'E'],
-		"F Scale": ['F', 'G', 'A', 'A#', 'C', 'D', 'E', 'F', 'E', 'D', 'C', 'A#', 'A', 'G', 'F'],
-		"F# Scale": ['F#', 'G#', 'A#', 'B', 'C#', 'D#', 'F', 'F#', 'F', 'D#', 'C#', 'B', 'A#', 'G#', 'F#'],
-		"G Scale": ['G', 'A', 'B', 'C', 'D', 'E', 'F#', 'G', 'F#', 'E', 'D', 'C', 'B', 'A', 'G'],
-		"G# Scale": ['G#', 'A#', 'C', 'C#', 'D#', 'F', 'G', 'G#', 'G', 'F', 'D#', 'C#',  'C', 'A#', 'G#'],
-		"A Scale": ['A', 'B', 'C#', 'D', 'E', 'F#', 'G#', 'A', 'G#', 'F#', 'E', 'D', 'C#', 'B', 'A'],
+		"A Scale": ['A', 'B', 'C#', 'D', 'E', 'F#', 'G#', 'A'],
+		"A# Scale": ['A#', 'C', 'D', 'D#', 'F', 'G', 'A', 'A#'],
+		"B Scale": ['B', 'C#', 'D#', 'E', 'F#', 'G#', 'A#', 'B'],
+		"C Scale": ['C', 'D', 'E', 'F', 'G', 'A', 'B', 'C'],
+		"C# Scale": ['C#', 'D#', 'F', 'F#', 'G#', 'A#', 'C' 'C#'],
+		"D Scale": ['D', 'E', 'F#', 'G', 'A', 'B', 'C#', 'D'],
+		"D# Scale": ['D#', 'F', 'G', 'G#', 'A#', 'C', 'D', 'D#'],
+		"E Scale": ['E', 'F#', 'G#', 'A', 'B', 'C#', 'D#', 'E'],
+		"F Scale": ['F', 'G', 'A', 'A#', 'C', 'D', 'E', 'F'],
+		"F# Scale": ['F#', 'G#', 'A#', 'B', 'C#', 'D#', 'F', 'F#'],
+		"G Scale": ['G', 'A', 'B', 'C', 'D', 'E', 'F#', 'G'],
+		"G# Scale": ['G#', 'A#', 'C', 'C#', 'D#', 'F', 'G', 'G#'],
 		}
 
 	# Compares pitches of 2 files using the get pitch method
@@ -91,16 +98,23 @@ class Comparison(ScreenWrapper, Screen):
 				self.gate = False
 		Analysis.get_pitch_init(self, 'output.wav')
 		self.notes = self.q.get()
-
-		if self.notes == self.scale_dict[self.scale]:
+		if len(self.notes) < len(self.scale_dict[self.scale]):
+			self.is_right = False
+		else:
+			for note in self.notes:
+				if note not in self.scale_dict[self.scale]:
+					self.is_right = False
+		if self.is_right == True:
+			print('You are Correct!')
 			playsound('music/victory.wav')
 		else:
-			print('FUCK NOOOOOOOOOOOO')
+			print('You are incorrect. feelsbadman')
+			self.is_right = True
 
 	def on_leave(self):
 		self.is_recording = False
 
-class Analysis(ScreenWrapper, Screen):
+class Analysis(ScreenWrapper):
 
 	pitch_text = StringProperty()
 	is_recording = BooleanProperty()
@@ -222,7 +236,7 @@ class Analysis(ScreenWrapper, Screen):
 		self.state = 'up'
 
 
-class Tuner(ScreenWrapper, Screen):
+class Tuner(ScreenWrapper):
 	
 	note_text = StringProperty()
 	cent_text = StringProperty()
@@ -290,7 +304,7 @@ class Tuner(ScreenWrapper, Screen):
 		raise Exception("Thread Terminated") # Terminates the thread
 
 
-class Metronome(ScreenWrapper, Screen):
+class Metronome(ScreenWrapper):
 	
 	met_text = StringProperty()
 	format_text = StringProperty()
@@ -357,6 +371,12 @@ class Metronome(ScreenWrapper, Screen):
 				else:
 					playsound('music/lowmet.wav')
 				sleep(bpm/3)
+			elif self.format_text == '2/2':
+				if counter%2 == 0:
+					playsound('music/highmet.wav')
+				else:
+					playsound('music/lowmet.wav')
+				sleep(bpm/2)
 			else:
 				pass
 
@@ -366,9 +386,10 @@ class Metronome(ScreenWrapper, Screen):
 
 class BandApp(App):
 
-	def build(self):
-		pass
+	wrapper = ScreenWrapper()
 
+	def build(self):
+		Window.clearcolor = (1, 1, 1, 1)
 
 if __name__ == '__main__':
 	BandApp().run()
