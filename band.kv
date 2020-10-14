@@ -13,7 +13,7 @@ WindowManager:
 	FloatLayout:
 		Label:
 			text: 'App Name'
-			color: 0, 0, 0, 1
+			color: .9, .9, .9, 1
 			pos_hint: {'center_x': .5, 'center_y': .6}
 			font_size: '40sp'
 			font_name: 'Oxygen/Oxygen-Regular.ttf'
@@ -48,7 +48,6 @@ WindowManager:
 				font_size: 10
 				background_color: 0, 2.29, 2.55, 1
 				on_press: root.manager.current = 'comparison'
-        
 			Button:
 				text: 'Analysis'
 				font_name: 'Oxygen/Oxygen-Regular.ttf'
@@ -56,7 +55,6 @@ WindowManager:
 				font_size: 10
 				background_color: 0, 2.29, 2.55, 1
 				on_press: root.manager.current = 'analysis'
-        
 			Button:
 				text: 'Tuner'
 				font_name: 'Oxygen/Oxygen-Regular.ttf'
@@ -64,7 +62,6 @@ WindowManager:
 				font_size: 10
 				background_color: 0, 2.29, 2.55, 1
 				on_press: root.manager.current = 'tuner'
-        
 			Button:
 				text: 'Met.'
 				font_name: 'Oxygen/Oxygen-Regular.ttf'
@@ -81,14 +78,14 @@ WindowManager:
 		Label: 
 			text: root.compare_text
 			font_name: 'Oxygen/Oxygen-Regular.ttf'
-			color: 0, 0, 0, 1
+			color: .9, .9, .9, 1
 			pos_hint: {'center_x': .5, 'center_y': .85}
 			font_size: '32sp'
 
 		Label:
 			text: "Scale: " + root.scale_text
 			font_name: 'Oxygen/Oxygen-Regular.ttf'
-			color: 0, 0, 0, 1
+			color: .9, .9, .9, 1
 			pos_hint: {'center_x': .5, 'center_y': .75}
 			font_size: '32sp'
 
@@ -129,7 +126,6 @@ WindowManager:
 			on_press: root.scale_text = "A# Scale"  if root.is_sharp == True else "Bb Scale"
 			on_press: root.scale = "A# Scale"
 			background_color: 0, 2.29, 2.55, 1
-      
 		Button:
 			text: 'B Scale'
 			font_name: 'Oxygen/Oxygen-Regular.ttf'
@@ -233,14 +229,14 @@ WindowManager:
 		Label:
 			text: "Recording" if root.is_recording == True else "Not Recording"
 			font_name: 'Oxygen/Oxygen-Regular.ttf'
-			color: 0, 0, 0, 1
+			color: .9, .9, .9, 1
 			pos_hint: {'center_x': .5, 'center_y': .35}
 			font_size: '32sp'
 
 		Label:
 			text: "Record and compare to the scale"
 			font_name: 'Oxygen/Oxygen-Regular.ttf'
-			color: 0, 0, 0, 1
+			color: .9, .9, .9, 1
 			pos_hint: {'center_x': .5, 'center_y': .3}
 			font_size: '12sp'
 
@@ -263,14 +259,14 @@ WindowManager:
 		Label:
 			text: root.pitch_text
 			font_name: 'Oxygen/Oxygen-Regular.ttf'
-			color: 0, 0, 0, 1
+			color: .9, .9, .9, 1
 			pos_hint: {'center_x': .5, 'center_y': .85}
 			font_size: '32sp'
 
 		Label:
 			text: 'Enter the Filename'
 			font_name: 'Oxygen/Oxygen-Regular.ttf'
-			color: 0, 0, 0, 1
+			color: .9, .9, .9, 1
 			pos_hint: {'center_x': .5, 'center_y': .75}
 
 		TextInput: 
@@ -278,12 +274,14 @@ WindowManager:
 			hint_text: 'Sample'
 			font_name: 'Oxygen/Oxygen-Regular.ttf'
 			pos_hint: {'center_x': .5, 'center_y': .7}
-			size_hint: .25, .05
+			size_hint: (None, None)
+			height: 30
+			width: 175
 
 		Label:
 			text: "Recording" if root.is_recording == True else "Not Recording"
 			font_name: 'Oxygen/Oxygen-Regular.ttf'
-			color: 0, 0, 0, 1
+			color: .9, .9, .9, 1
 			pos_hint: {'center_x': .5, 'center_y': .55}
 			font_size: '32sp'
 
@@ -296,7 +294,6 @@ WindowManager:
 			pos_hint: {'center_x': .35, 'center_y': .4}
 			on_press: root.get_pitch_init(analinput.text)
 			background_color: 0, 2.29, 2.55, 1
-      
 		ToggleButton:
 			id: recordanal
 			text: "Record"
@@ -307,9 +304,9 @@ WindowManager:
 			on_press: root.record_init(self.state)
 			background_color: 0, 2.29, 2.55, 1
 
-
 <Tuner>:
 	name: 'tuner'
+	font_name: 'Oxygen/Oxygen-Regular.ttf'
 
 	FloatLayout:
 
@@ -330,26 +327,27 @@ WindowManager:
 		Label:
 			text: 'Tuner'
 			font_name: 'Oxygen/Oxygen-Regular.ttf'
-			color: 0, 0, 0, 1
+			color: .9, .9, .9, 1
 			pos_hint: {'center_x': .5, 'center_y': .8}
 			font_size: '32sp'
 
 <Metronome>:
 	name: 'metronome'
+	font_name: 'Oxygen/Oxygen-Regular.ttf'
 
 	FloatLayout:
 
 		Label:
 			text: root.met_text
 			font_name: 'Oxygen/Oxygen-Regular.ttf'
-			color: 0, 0, 0, 1
+			color: .9, .9, .9, 1
 			pos_hint: {'center_x': .5, 'center_y': .85}
 			font_size: '32sp'
 
 		Label:
 			text: 'Enter the BPM'
 			font_name: 'Oxygen/Oxygen-Regular.ttf'
-			color: 0, 0, 0, 1
+			color: .9, .9, .9, 1
 			pos_hint: {'center_x': .5, 'center_y': .8}
 
 		TextInput: 
@@ -357,12 +355,14 @@ WindowManager:
 			hint_text: 'BPM'
 			font_name: 'Oxygen/Oxygen-Regular.ttf'
 			pos_hint: {'center_x': .5, 'center_y': .75}
-			size_hint: .25, .05
+			size_hint: (None, None)
+			height: 30
+			width: 175
 
 		Label:
 			text: 'Format: ' + root.format_text
 			font_name: 'Oxygen/Oxygen-Regular.ttf'
-			color: 0, 0, 0, 1
+			color: .9, .9, .9, 1
 			pos_hint: {'center_x': .5, 'center_y': .65}
 			font_size: '32sp'
 
@@ -393,6 +393,7 @@ WindowManager:
 			on_press: root.format_text = '4/4'
 			background_color: 0, 2.29, 2.55, 1
 
+
 		Button:
 			text: '6/8'
 			font_name: 'Oxygen/Oxygen-Regular.ttf'
@@ -416,7 +417,9 @@ WindowManager:
 			hint_text: 'Ex: 3/8'
 			font_name: 'Oxygen/Oxygen-Regular.ttf'
 			pos_hint: {'center_x': .5, 'center_y': .45}
-			size_hint: .2, .05
+			size_hint: (None, None)
+			height: 30
+			width: 75
 
 		Button:
 			text: 'Custom'
@@ -436,4 +439,3 @@ WindowManager:
 			pos_hint: {'center_x': .5, 'center_y': .2}
 			on_press: root.met(self.state, metinput.text)
 			background_color: 0, 2.29, 2.55, 1
-      

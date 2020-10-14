@@ -50,18 +50,18 @@ class Comparison(ScreenWrapper):
 		self.is_sharp = True
 		self.is_right = True
 		self.scale_dict = {
-		"A Scale": ['A', 'B', 'C#', 'D', 'E', 'F#', 'G#', 'A'],
-		"A# Scale": ['A#', 'C', 'D', 'D#', 'F', 'G', 'A', 'A#'],
-		"B Scale": ['B', 'C#', 'D#', 'E', 'F#', 'G#', 'A#', 'B'],
-		"C Scale": ['C', 'D', 'E', 'F', 'G', 'A', 'B', 'C'],
-		"C# Scale": ['C#', 'D#', 'F', 'F#', 'G#', 'A#', 'C' 'C#'],
-		"D Scale": ['D', 'E', 'F#', 'G', 'A', 'B', 'C#', 'D'],
-		"D# Scale": ['D#', 'F', 'G', 'G#', 'A#', 'C', 'D', 'D#'],
-		"E Scale": ['E', 'F#', 'G#', 'A', 'B', 'C#', 'D#', 'E'],
-		"F Scale": ['F', 'G', 'A', 'A#', 'C', 'D', 'E', 'F'],
-		"F# Scale": ['F#', 'G#', 'A#', 'B', 'C#', 'D#', 'F', 'F#'],
-		"G Scale": ['G', 'A', 'B', 'C', 'D', 'E', 'F#', 'G'],
-		"G# Scale": ['G#', 'A#', 'C', 'C#', 'D#', 'F', 'G', 'G#'],
+		"A Scale": ['A', 'B', 'C#', 'D', 'E', 'F#', 'G#'],
+		"A# Scale": ['A#', 'C', 'D', 'D#', 'F', 'G', 'A'],
+		"B Scale": ['B', 'C#', 'D#', 'E', 'F#', 'G#', 'A#'],
+		"C Scale": ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
+		"C# Scale": ['C#', 'D#', 'F', 'F#', 'G#', 'A#', 'C'],
+		"D Scale": ['D', 'E', 'F#', 'G', 'A', 'B', 'C#'],
+		"D# Scale": ['D#', 'F', 'G', 'G#', 'A#', 'C', 'D'],
+		"E Scale": ['E', 'F#', 'G#', 'A', 'B', 'C#', 'D#'],
+		"F Scale": ['F', 'G', 'A', 'A#', 'C', 'D', 'E'],
+		"F# Scale": ['F#', 'G#', 'A#', 'B', 'C#', 'D#', 'F'],
+		"G Scale": ['G', 'A', 'B', 'C', 'D', 'E', 'F#'],
+		"G# Scale": ['G#', 'A#', 'C', 'C#', 'D#', 'F', 'G']
 		}
 
 	# Compares pitches of 2 files using the get pitch method
@@ -387,7 +387,7 @@ class Metronome(ScreenWrapper):
 class BandApp(App):
 
 	def build(self):
-		Window.clearcolor = (1, 1, 1, 1)
+		Window.clearcolor = (.3, .3, .3, 1)
 
 if __name__ == '__main__':
 	BandApp().run()
