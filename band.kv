@@ -48,7 +48,6 @@ WindowManager:
 				font_size: 10
 				background_color: 0, 2.29, 2.55, 1
 				on_press: root.manager.current = 'comparison'
-        
 			Button:
 				text: 'Analysis'
 				font_name: 'Oxygen/Oxygen-Regular.ttf'
@@ -56,7 +55,6 @@ WindowManager:
 				font_size: 10
 				background_color: 0, 2.29, 2.55, 1
 				on_press: root.manager.current = 'analysis'
-        
 			Button:
 				text: 'Tuner'
 				font_name: 'Oxygen/Oxygen-Regular.ttf'
@@ -64,7 +62,6 @@ WindowManager:
 				font_size: 10
 				background_color: 0, 2.29, 2.55, 1
 				on_press: root.manager.current = 'tuner'
-        
 			Button:
 				text: 'Met.'
 				font_name: 'Oxygen/Oxygen-Regular.ttf'
@@ -129,7 +126,6 @@ WindowManager:
 			on_press: root.scale_text = "A# Scale"  if root.is_sharp == True else "Bb Scale"
 			on_press: root.scale = "A# Scale"
 			background_color: 0, 2.29, 2.55, 1
-      
 		Button:
 			text: 'B Scale'
 			font_name: 'Oxygen/Oxygen-Regular.ttf'
@@ -296,7 +292,6 @@ WindowManager:
 			pos_hint: {'center_x': .35, 'center_y': .4}
 			on_press: root.get_pitch_init(analinput.text)
 			background_color: 0, 2.29, 2.55, 1
-      
 		ToggleButton:
 			id: recordanal
 			text: "Record"
@@ -307,9 +302,9 @@ WindowManager:
 			on_press: root.record_init(self.state)
 			background_color: 0, 2.29, 2.55, 1
 
-
 <Tuner>:
 	name: 'tuner'
+	font_name: 'Oxygen/Oxygen-Regular.ttf'
 
 	FloatLayout:
 
@@ -336,6 +331,7 @@ WindowManager:
 
 <Metronome>:
 	name: 'metronome'
+	font_name: 'Oxygen/Oxygen-Regular.ttf'
 
 	FloatLayout:
 
@@ -393,6 +389,7 @@ WindowManager:
 			on_press: root.format_text = '4/4'
 			background_color: 0, 2.29, 2.55, 1
 
+
 		Button:
 			text: '6/8'
 			font_name: 'Oxygen/Oxygen-Regular.ttf'
@@ -436,4 +433,4 @@ WindowManager:
 			pos_hint: {'center_x': .5, 'center_y': .2}
 			on_press: root.met(self.state, metinput.text)
 			background_color: 0, 2.29, 2.55, 1
-      
+			
