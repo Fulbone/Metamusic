@@ -386,8 +386,6 @@ class Metronome(ScreenWrapper):
 
 class BandApp(App):
 
-	wrapper = ScreenWrapper()
-
 	def build(self):
 		Window.clearcolor = (1, 1, 1, 1)
 
