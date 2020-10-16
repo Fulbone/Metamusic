@@ -1,8 +1,9 @@
 import sys
 import aubio
-from aubio import source, pitch, midi2note, freq2note, note2freq
+from aubio import source, pitch, tempo, midi2note, freq2note, note2freq
 from os import path
-import numpy as np 
+import numpy as np
+from numpy import median, diff
 import pyaudio
 import wave
 import queue
@@ -64,18 +65,6 @@ class Comparison(ScreenWrapper):
 		"G# Scale": ['G#', 'A#', 'C', 'C#', 'D#', 'F', 'G']
 		}
 
-	# Compares pitches of 2 files using the get pitch method
-	def compare_pitch(self, file1, file2):
-		file1_pitch = self.a.get_pitch(file1)	
-		file2_pitch = self.a.get_pitch(file2)	
-
-		if file1_pitch == file2_pitch:
-			self.compare_text = "You are correct"
-			print("\nYou are correct.")
-		else:
-			self.compare_text = "You are incorrect"
-			print("\nYou are incorrect.")
-
 	def record_scale(self, state):
 		if self.scale == "":
 			self.scale_text = "Select a Scale"
@@ -108,7 +97,8 @@ class Comparison(ScreenWrapper):
 			print('You are Correct!')
 			playsound('music/victory.wav')
 		else:
-			print('You are incorrect. feelsbadman')
+			print('You are incorrect.')
+			playsound('music/failure.wav')
 			self.is_right = True
 
 	def on_leave(self):
@@ -118,11 +108,123 @@ class Analysis(ScreenWrapper):
 
 	pitch_text = StringProperty()
 	is_recording = BooleanProperty()
+	bpm = StringProperty()
+	key = StringProperty()
 
 	def __init__(self, **kwargs):
 		super(Analysis, self).__init__(**kwargs) 
 		self.pitch_text	= "Analysis"
 		self.is_recording = False
+		self.bpm = "None"
+		self.key = "None"
+		self.key_dict = {
+		"A": ['A', 'B', 'C#', 'D', 'E', 'F#', 'G#'],
+		"A#": ['A#', 'C', 'D', 'D#', 'F', 'G', 'A'],
+		"B": ['B', 'C#', 'D#', 'E', 'F#', 'G#', 'A#'],
+		"C": ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
+		"C#": ['C#', 'D#', 'F', 'F#', 'G#', 'A#', 'C'],
+		"D": ['D', 'E', 'F#', 'G', 'A', 'B', 'C#'],
+		"D#": ['D#', 'F', 'G', 'G#', 'A#', 'C', 'D'],
+		"E": ['E', 'F#', 'G#', 'A', 'B', 'C#', 'D#'],
+		"F": ['F', 'G', 'A', 'A#', 'C', 'D', 'E'],
+		"F#": ['F#', 'G#', 'A#', 'B', 'C#', 'D#', 'F'],
+		"G": ['G', 'A', 'B', 'C', 'D', 'E', 'F#'],
+		"G#": ['G#', 'A#', 'C', 'C#', 'D#', 'F', 'G']
+		}
+
+	def analyze_init(self, state):
+		self.state = state
+		if self.state == 'down':
+			self.is_recording = True
+			self.q = queue.Queue()
+			t = Thread(target=Analysis.analyze, args=(self,))
+			t.daemon = True
+			t.start()
+		else:
+			self.is_recording = False
+
+	def analyze(self):
+		self.gate = True
+		while self.state == 'down':
+			if self.gate == True:
+				Analysis.record_init(self, self.state)
+				self.gate = False
+		Analysis.get_bpm_init(self, 'output.wav')
+		self.bpm = str(round(self.q.get(), 2))
+		self.gate = True
+		self.key_running = True
+		while self.key_running == True:
+			if self.gate == True:
+				Analysis.get_key_init(self, 'output.wav')
+				self.gate = False
+		self.key = str(self.q.get())
+		raise Exception("Thread Terminated")
+
+	def get_key_init(self, filename):
+		self.filename = filename
+		t = Thread(target=Analysis.get_key, args=(self,))
+		t.daemon = True
+		t.start()
+
+	def get_key(self):
+		Analysis.get_pitch_init(self, self.filename)
+		notes = self.q.get()
+		key_list = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#']
+		for note in notes:
+			#print(note)
+			for key in key_list:
+				#print(key)
+				if note not in self.key_dict[key]:
+					key_list.remove(key)
+		print(key_list)
+		self.q.put(key_list)
+		self.key_running = False
+		raise Exception("Thread Terminated")
+
+	def get_bpm_init(self, filename):
+		self.filename = filename
+		t = Thread(target=Analysis.get_bpm, args=(self,))
+		t.daemon = True
+		t.start()
+
+
+	def get_bpm(self):
+	    samplerate, win_s, hop_s = 44100, 1024, 512
+
+	    s = source(self.filename, samplerate, hop_s)
+	    samplerate = s.samplerate
+	    o = tempo("specdiff", win_s, hop_s, samplerate)
+	    # List of beats, in samples
+	    beats = []
+	    # Total number of frames read
+	    total_frames = 0
+
+	    while True:
+	        samples, read = s()
+	        is_beat = o(samples)
+	        if is_beat:
+	            this_beat = o.get_last_s()
+	            beats.append(this_beat)
+	            #if o.get_confidence() > .2 and len(beats) > 2.:
+	            #    break
+	        total_frames += read
+	        if read < hop_s:
+	            break
+
+	    def beats_to_bpm(beats):
+	        # if enough beats are found, convert to periods then to bpm
+	        if len(beats) > 1:
+	            if len(beats) < 4:
+	                print("Few beats found")
+	            bpms = 60./diff(beats)
+	            return median(bpms)
+	        else:
+	            print("Not enough beats found")
+	            return 0
+
+	    self.q.put(beats_to_bpm(beats))
+	    raise Exception("Thread Terminated")
+
 
 	def get_pitch_init(self, filename):
 		self.filename = filename
@@ -133,6 +235,7 @@ class Analysis(ScreenWrapper):
 	# Gets the musical notes from a file
 	def get_pitch(self):
 		if path.exists(self.filename) == False:
+			self.pitch_text = "Path does not exist"
 			raise Exception(f"File Path to {self.filename} does not exist")
 
 		else:
@@ -157,6 +260,7 @@ class Analysis(ScreenWrapper):
 
 			# Total number of frames read
 			total_frames = 0
+
 			while True:
 			    samples, read = s()
 			    pitch_midi = pitch_o(samples)[0]
@@ -183,14 +287,14 @@ class Analysis(ScreenWrapper):
 				note = midi2note(midi)
 				notes.append(note.strip("0123456789"))
 
-			print(notes)
-			self.pitch_text = str(notes)
+			#print(notes)
 			self.q.put(notes)
-			raise Exception("Thread Terminated")
+			#raise Exception("Thread Terminated")
 
 	# Starts the thread to record from mic
 	def record_init(self, state):
 		self.state = state
+
 		if self.state == 'down': # Checks if the button is in a pressed state
 			self.is_recording = True
 			self.t = Thread(target=Analysis.record, args=(self, self.state))
@@ -299,6 +403,7 @@ class Tuner(ScreenWrapper):
 				self.color_red = round((abs(pitch_cent) * .051), 3) 
 				self.color_green = round(((abs(pitch_cent) * -.051) + 2.55), 3)
 				print(f"Green: {self.color_green} Red: {self.color_red}")
+				sleep(.05)
 			#print(freq2note(pitch))
 
 		raise Exception("Thread Terminated") # Terminates the thread
@@ -350,35 +455,38 @@ class Metronome(ScreenWrapper):
 					playsound('music/highmet.wav')
 				else:
 					playsound('music/lowmet.wav')
-				sleep(bpm)
+				sleep(bpm - .034)
 			elif self.format_text == '3/4':
 				if counter == 0 or counter%3 == 0:
 					playsound('music/highmet.wav')
 				else:
 					playsound('music/lowmet.wav')
-				sleep(bpm)
+				sleep(bpm - .034)
 			elif self.format_text == '4/4':
 				if counter == 0 or counter%4 == 0:
 					playsound('music/highmet.wav')
 				else:
 					playsound('music/lowmet.wav')
-				sleep(bpm)
+				sleep(bpm - .034)
 			elif self.format_text == '6/8':
 				if counter == 0 or counter%6 == 0:
 					playsound('music/highmet.wav')
 				elif counter%3 == 0:
-					playsound('music/met.wav')
+					playsound('music/medmet.wav')
 				else:
 					playsound('music/lowmet.wav')
-				sleep(bpm/3)
+				sleep(bpm - .034)
 			elif self.format_text == '2/2':
 				if counter%2 == 0:
 					playsound('music/highmet.wav')
 				else:
 					playsound('music/lowmet.wav')
-				sleep(bpm/2)
+				sleep(bpm - .034)
 			else:
-				pass
+				if counter%int(self.format_text[0]) == 0:
+					playsound('music/highmet.wav')
+				else:
+					playsound('music/lowmet.wav')
 
 			counter += 1
 		raise Exception("Thread Terminated")

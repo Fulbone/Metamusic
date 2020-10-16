@@ -12,7 +12,7 @@ WindowManager:
 
 	FloatLayout:
 		Label:
-			text: 'App Name'
+			text: 'Msuic'
 			color: .9, .9, .9, 1
 			pos_hint: {'center_x': .5, 'center_y': .6}
 			font_size: '40sp'
@@ -264,44 +264,34 @@ WindowManager:
 			font_size: '32sp'
 
 		Label:
-			text: 'Enter the Filename'
-			font_name: 'Oxygen/Oxygen-Regular.ttf'
-			color: .9, .9, .9, 1
-			pos_hint: {'center_x': .5, 'center_y': .75}
-
-		TextInput: 
-			id: analinput
-			hint_text: 'Sample'
-			font_name: 'Oxygen/Oxygen-Regular.ttf'
-			pos_hint: {'center_x': .5, 'center_y': .7}
-			size_hint: (None, None)
-			height: 30
-			width: 175
-
-		Label:
 			text: "Recording" if root.is_recording == True else "Not Recording"
 			font_name: 'Oxygen/Oxygen-Regular.ttf'
 			color: .9, .9, .9, 1
-			pos_hint: {'center_x': .5, 'center_y': .55}
+			pos_hint: {'center_x': .5, 'center_y': .7}
 			font_size: '32sp'
 
-		Button:
-			id: analbutton
-			text: "Analyze"
+		Label:
+			text: "BPM: "  + root.bpm
 			font_name: 'Oxygen/Oxygen-Regular.ttf'
-			color: 0, 0, 0, 1
-			size_hint: .25, .1
-			pos_hint: {'center_x': .35, 'center_y': .4}
-			on_press: root.get_pitch_init(analinput.text)
-			background_color: 0, 2.29, 2.55, 1
+			color: .9, .9, .9, 1
+			pos_hint: {'center_x': .4, 'center_y': .55}
+			font_size: '24sp'
+
+		Label:
+			text: "KEY: " + root.key
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			color: .9, .9, .9, 1
+			pos_hint: {'center_x': .6, 'center_y': .55}
+			font_size: '24sp'
+
 		ToggleButton:
 			id: recordanal
 			text: "Record"
 			font_name: 'Oxygen/Oxygen-Regular.ttf'
 			color: 0, 0, 0, 1
 			size_hint: .25, .1
-			pos_hint: {'center_x': .65, 'center_y': .4}
-			on_press: root.record_init(self.state)
+			pos_hint: {'center_x': .5, 'center_y': .35}
+			on_press: root.analyze_init(self.state)
 			background_color: 0, 2.29, 2.55, 1
 
 <Tuner>:
