@@ -18,6 +18,7 @@ from kivy.properties import StringProperty, NumericProperty, BooleanProperty, Ob
 from kivy.clock import Clock
 from playsound import playsound
 from kivy.core.window import Window
+from kivy.uix.image import Image
 
 # Manager for the screens
 class WindowManager(ScreenManager):
@@ -110,6 +111,7 @@ class Analysis(ScreenWrapper):
 	is_recording = BooleanProperty()
 	bpm = StringProperty()
 	key = StringProperty()
+	is_major = BooleanProperty()
 
 	def __init__(self, **kwargs):
 		super(Analysis, self).__init__(**kwargs) 
@@ -117,7 +119,8 @@ class Analysis(ScreenWrapper):
 		self.is_recording = False
 		self.bpm = "None"
 		self.key = "None"
-		self.key_dict = {
+		self.is_major = True
+		self.major_dict = {
 		"A": ['A', 'B', 'C#', 'D', 'E', 'F#', 'G#'],
 		"A#": ['A#', 'C', 'D', 'D#', 'F', 'G', 'A'],
 		"B": ['B', 'C#', 'D#', 'E', 'F#', 'G#', 'A#'],
@@ -131,6 +134,24 @@ class Analysis(ScreenWrapper):
 		"G": ['G', 'A', 'B', 'C', 'D', 'E', 'F#'],
 		"G#": ['G#', 'A#', 'C', 'C#', 'D#', 'F', 'G']
 		}
+		self.minor_dict = {
+		"A": ['A', 'B', 'C', 'D', 'E', 'F', 'G#'],
+		"A#": ['A#', 'C', 'C#', 'D#', 'F', 'G#', 'A#'],
+		"B": ['B', 'C#', 'D', 'E', 'F#', 'G', 'A'],
+		"C": ['C', 'D', 'D#', 'F', 'G', 'G#', 'A#'],
+		"C#": ['C#', 'D#', 'E', 'F#', 'G#', 'A', 'C'],
+		"D": ['D', 'E', 'F', 'G', 'A', 'A#', 'C'],
+		"D#": ['D#', 'F', 'F#', 'G#', 'A#', 'B', 'C#'],
+		"E": ['E', 'F#', 'G', 'A', 'B', 'C', 'D'],
+		"F": ['F', 'G', 'G#', 'A#', 'C', 'C#', 'D#'],
+		"F#": ['F#', 'G#', 'A', 'B', 'C#', 'D', 'E'],
+		"G": ['G', 'A', 'A#', 'C', 'D', 'E', 'F#'],
+		"G#": ['G#', 'A#', 'B', 'C#', 'D#', 'E', 'F#']
+		}
+
+	def on_enter(self):
+		self.bpm = "None"
+		self.key = "None"
 
 	def analyze_init(self, state):
 		self.state = state
@@ -157,7 +178,11 @@ class Analysis(ScreenWrapper):
 			if self.gate == True:
 				Analysis.get_key_init(self, 'output.wav')
 				self.gate = False
-		self.key = str(self.q.get())
+		key = self.q.get()
+		if len(key) > 3 or len(key) == 0:
+			self.key = "Unsure"
+		else:
+			self.key = str(key)
 		raise Exception("Thread Terminated")
 
 	def get_key_init(self, filename):
@@ -169,13 +194,18 @@ class Analysis(ScreenWrapper):
 	def get_key(self):
 		Analysis.get_pitch_init(self, self.filename)
 		notes = self.q.get()
+		print(notes)
 		key_list = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#']
-		for note in notes:
-			#print(note)
-			for key in key_list:
-				#print(key)
-				if note not in self.key_dict[key]:
-					key_list.remove(key)
+		if self.is_major == True:
+			for note in notes:
+				for key in key_list:
+					if note not in self.major_dict[key]:
+						key_list.remove(key)
+		else:
+			for note in notes:
+				for key in key_list:
+					if note not in self.minor_dict[key]:
+						key_list.remove(key)
 		print(key_list)
 		self.q.put(key_list)
 		self.key_running = False
@@ -186,7 +216,6 @@ class Analysis(ScreenWrapper):
 		t = Thread(target=Analysis.get_bpm, args=(self,))
 		t.daemon = True
 		t.start()
-
 
 	def get_bpm(self):
 	    samplerate, win_s, hop_s = 44100, 1024, 512
@@ -205,14 +234,12 @@ class Analysis(ScreenWrapper):
 	        if is_beat:
 	            this_beat = o.get_last_s()
 	            beats.append(this_beat)
-	            #if o.get_confidence() > .2 and len(beats) > 2.:
-	            #    break
 	        total_frames += read
 	        if read < hop_s:
 	            break
 
 	    def beats_to_bpm(beats):
-	        # if enough beats are found, convert to periods then to bpm
+	        # If enough beats are found, convert to periods then to bpm
 	        if len(beats) > 1:
 	            if len(beats) < 4:
 	                print("Few beats found")
@@ -224,7 +251,6 @@ class Analysis(ScreenWrapper):
 
 	    self.q.put(beats_to_bpm(beats))
 	    raise Exception("Thread Terminated")
-
 
 	def get_pitch_init(self, filename):
 		self.filename = filename
@@ -475,7 +501,7 @@ class Metronome(ScreenWrapper):
 					playsound('music/medmet.wav')
 				else:
 					playsound('music/lowmet.wav')
-				sleep(bpm - .034)
+				sleep((bpm/3) - .034)
 			elif self.format_text == '2/2':
 				if counter%2 == 0:
 					playsound('music/highmet.wav')
@@ -483,10 +509,7 @@ class Metronome(ScreenWrapper):
 					playsound('music/lowmet.wav')
 				sleep(bpm - .034)
 			else:
-				if counter%int(self.format_text[0]) == 0:
-					playsound('music/highmet.wav')
-				else:
-					playsound('music/lowmet.wav')
+				pass
 
 			counter += 1
 		raise Exception("Thread Terminated")

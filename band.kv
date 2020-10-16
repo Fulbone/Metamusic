@@ -16,7 +16,7 @@ WindowManager:
 			color: .9, .9, .9, 1
 			pos_hint: {'center_x': .5, 'center_y': .6}
 			font_size: '40sp'
-			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			font_name: 'Oxygen/Oxygen-Bold.ttf'
 
 		Button:
 			text:'Start'
@@ -26,6 +26,10 @@ WindowManager:
 			pos_hint: {'center_x': .5, 'center_y': .4}
 			size_hint: .2, .1
 			on_press: root.manager.current = 'comparison'
+
+		Image:
+			source: 'images/trombone.png'
+			size: self.texture_size
 
 <ScreenWrapper>:
 	BoxLayout:
@@ -256,6 +260,24 @@ WindowManager:
 	
 	FloatLayout:
 
+		Button:
+			text: "Major"
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			color: 0, 0, 0, 1
+			pos_hint: {'center_x': .05, 'center_y': .95}
+			size_hint: .1, .1
+			on_press: root.is_major = True
+			background_color: 0, 2.29, 2.55, 1
+
+		Button:
+			text: "Minor"
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			color: 0, 0, 0, 1
+			pos_hint: {'center_x': .95, 'center_y': .95}
+			size_hint: .1, .1
+			on_press: root.is_major = False
+			background_color: 0, 2.29, 2.55, 1
+
 		Label:
 			text: root.pitch_text
 			font_name: 'Oxygen/Oxygen-Regular.ttf'
@@ -264,24 +286,32 @@ WindowManager:
 			font_size: '32sp'
 
 		Label:
+			text: "Major" if root.is_major == True else "Minor"
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			color: .9, .9, .9, 1
+			pos_hint: {'center_x': .5, 'center_y': .75}
+			font_size: '24sp'
+
+
+		Label:
 			text: "Recording" if root.is_recording == True else "Not Recording"
 			font_name: 'Oxygen/Oxygen-Regular.ttf'
 			color: .9, .9, .9, 1
-			pos_hint: {'center_x': .5, 'center_y': .7}
-			font_size: '32sp'
+			pos_hint: {'center_x': .5, 'center_y': .45}
+			font_size: '24sp'
 
 		Label:
 			text: "BPM: "  + root.bpm
 			font_name: 'Oxygen/Oxygen-Regular.ttf'
 			color: .9, .9, .9, 1
-			pos_hint: {'center_x': .4, 'center_y': .55}
+			pos_hint: {'center_x': .4, 'center_y': .6}
 			font_size: '24sp'
 
 		Label:
 			text: "KEY: " + root.key
 			font_name: 'Oxygen/Oxygen-Regular.ttf'
 			color: .9, .9, .9, 1
-			pos_hint: {'center_x': .6, 'center_y': .55}
+			pos_hint: {'center_x': .6, 'center_y': .6}
 			font_size: '24sp'
 
 		ToggleButton:
