@@ -70,7 +70,7 @@ class Comparison(ScreenWrapper):
 
 	def record_scale(self, state):
 		if self.scale == "":
-			self.scale_text = "Select a Scale"
+			self.is_correct = "Select a Scale"
 		else:
 			self.state = state
 			if self.state == 'down':
