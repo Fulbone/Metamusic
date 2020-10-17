@@ -1,3 +1,4 @@
+__version__ = '1.0.0'
 import sys
 import aubio
 from aubio import source, pitch, tempo, midi2note, freq2note, note2freq
@@ -16,9 +17,10 @@ from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen 
 from kivy.properties import StringProperty, NumericProperty, BooleanProperty, ObjectProperty
 from kivy.clock import Clock
-from playsound import playsound
 from kivy.core.window import Window
 from kivy.uix.image import Image
+from playsound import playsound
+
 
 # Manager for the screens
 class WindowManager(ScreenManager):
@@ -554,10 +556,10 @@ class Metronome(ScreenWrapper):
 		raise Exception("Thread Terminated")
 
 
-class BandApp(App):
+class MetamusicApp(App):
 
 	def build(self):
 		Window.clearcolor = (.3, .3, .3, 1)
 
 if __name__ == '__main__':
-	BandApp().run()
+	MetamusicApp().run()

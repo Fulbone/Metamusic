@@ -1,0 +1,556 @@
+#:kivy 1.11.1
+
+WindowManager:
+	TitleScreen:
+	Comparison:
+	Analysis:
+	Tuner:
+	Metronome:
+
+<TitleScreen>:
+	name: 'titlescreen'
+
+	FloatLayout:
+		Label:
+			text: 'Metamusic'
+			color: .9, .9, .9, 1
+			pos_hint: {'center_x': .5, 'center_y': .5}
+			font_size: '40sp'
+			font_name: 'Oxygen/Oxygen-Bold.ttf'
+
+		Button:
+			text:'Start'
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			color: 0, 0, 0, 1
+			background_color: 0, 2.29, 2.55, 1
+			pos_hint: {'center_x': .5, 'center_y': .2}
+			size_hint: .25, .1
+			on_press: root.manager.current = 'comparison'
+
+		Image:
+			source: 'images/trombone.png'
+			size_hint_x: .3
+			size_hint_y: .3
+			pos_hint: {'center_x': .5, 'center_y': .8}
+
+<ScreenWrapper>:
+	BoxLayout:
+		id: wrapper
+		orientation: 'vertical'
+
+		BoxLayout:
+			id: main
+			orientation: 'vertical'
+
+		BoxLayout:
+			id: navbar
+			orientation: 'horizontal'
+			size_hint: 1, .1
+
+			Button:
+				text: 'Comparison'
+				font_name: 'Oxygen/Oxygen-Regular.ttf'
+				color: 0, 0, 0, 1
+				font_size: 8
+				background_color: 0, 2.29, 2.55, 1
+				on_press: root.manager.current = 'comparison'
+			Button:
+				text: 'Analysis'
+				font_name: 'Oxygen/Oxygen-Regular.ttf'
+				color: 0, 0, 0, 1
+				font_size: 8
+				background_color: 0, 2.29, 2.55, 1
+				on_press: root.manager.current = 'analysis'
+			Button:
+				text: 'Tuner'
+				font_name: 'Oxygen/Oxygen-Regular.ttf'
+				color: 0, 0, 0, 1
+				font_size: 8
+				background_color: 0, 2.29, 2.55, 1
+				on_press: root.manager.current = 'tuner'
+			Button:
+				text: 'Met.'
+				font_name: 'Oxygen/Oxygen-Regular.ttf'
+				color: 0, 0, 0, 1
+				font_size: 8
+				background_color: 0, 2.29, 2.55, 1
+				on_press: root.manager.current = 'metronome'
+
+<Comparison>:
+	name: 'comparison'
+
+	FloatLayout:
+
+		Label: 
+			text: root.compare_text
+			font_name: 'Oxygen/Oxygen-Bold.ttf'
+			color: .9, .9, .9, 1
+			pos_hint: {'center_x': .5, 'center_y': .85}
+			font_size: '28sp'
+
+		Label:
+			text: "Scale: " + root.scale_text
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			color: .9, .9, .9, 1
+			pos_hint: {'center_x': .5, 'center_y': .775}
+			font_size: '24sp'
+
+		Label:
+			text: root.is_correct
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			color: .9, .9, .9, 1
+			pos_hint: {'center_x': .5, 'center_y': .7}
+			font_size: '20sp'
+
+		Button:
+			text: "Sharps"
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			font_size: 8
+			color: 0, 0, 0, 1
+			pos_hint: {'center_x': .125, 'center_y': .95}
+			size_hint: .25, .1
+			on_press: root.is_sharp = True
+			background_color: 0, 2.29, 2.55, 1
+
+		Button:
+			text: "Flats"
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			font_size: 8
+			color: 0, 0, 0, 1
+			pos_hint: {'center_x': .875, 'center_y': .95}
+			size_hint: .25, .1
+			on_press: root.is_sharp = False
+			background_color: 0, 2.29, 2.55, 1
+
+		Button:
+			text: 'A Scale'
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			font_size: 8
+			color: 0, 0, 0, 1
+			pos_hint: {'center_x': .083, 'center_y': .575}
+			size_hint: .166, .1
+			on_press: root.scale_text = "A Scale"
+			on_press: root.scale = "A Scale"
+			background_color: 0, 2.29, 2.55, 1
+
+		Button:
+			text: 'A# Scale' if root.is_sharp == True else 'Bb Scale'
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			font_size: 8
+			color: 0, 0, 0, 1
+			pos_hint: {'center_x': .249, 'center_y': .575}
+			size_hint: .166, .1
+			on_press: root.scale_text = "A# Scale"  if root.is_sharp == True else "Bb Scale"
+			on_press: root.scale = "A# Scale"
+			background_color: 0, 2.29, 2.55, 1
+		Button:
+			text: 'B Scale'
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			font_size: 8
+			color: 0, 0, 0, 1
+			pos_hint: {'center_x': .416, 'center_y': .575}
+			size_hint: .166, .1
+			on_press: root.scale_text = "B Scale"
+			on_press: root.scale = "B Scale"
+			background_color: 0, 2.29, 2.55, 1
+
+		Button:
+			text: 'C Scale'
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			font_size: 8
+			color: 0, 0, 0, 1
+			pos_hint: {'center_x': .582, 'center_y': .575}
+			size_hint: .166, .1
+			on_press: root.scale_text = "C Scale"
+			on_press: root.scale = "C Scale"
+			background_color: 0, 2.29, 2.55, 1
+
+		Button:
+			text: 'C# Scale' if root.is_sharp == True else 'Db Scale'
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			font_size: 8
+			color: 0, 0, 0, 1
+			pos_hint: {'center_x': .748, 'center_y': .575}
+			size_hint: .166, .1
+			on_press: root.scale_text = "C# Scale" if root.is_sharp == True else "Db Scale"
+			on_press: root.scale = "C# Scale"
+			background_color: 0, 2.29, 2.55, 1
+
+		Button:
+			text: 'D Scale'
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			font_size: 8
+			color: 0, 0, 0, 1
+			pos_hint: {'center_x': .914, 'center_y': .575}
+			size_hint: .166, .1
+			on_press: root.scale_text = "D Scale"
+			on_press: root.scale = "D Scale"
+			background_color: 0, 2.29, 2.55, 1
+
+		Button:
+			text: 'D# Scale' if root.is_sharp == True else 'Eb Scale'
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			font_size: 8
+			color: 0, 0, 0, 1
+			pos_hint: {'center_x': .083, 'center_y': .475}
+			size_hint: .166, .1
+			on_press: root.scale_text = "D# Scale"  if root.is_sharp == True else "Eb Scale"
+			on_press: root.scale = "D# Scale"
+			background_color: 0, 2.29, 2.55, 1
+
+		Button:
+			text: 'E Scale'
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			font_size: 8
+			color: 0, 0, 0, 1
+			pos_hint: {'center_x': .249, 'center_y': .475}
+			size_hint: .166, .1
+			on_press: root.scale_text = "E Scale"
+			on_press: root.scale = "E Scale"
+			background_color: 0, 2.29, 2.55, 1
+
+		Button:
+			text: 'F Scale'
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			font_size: 8
+			color: 0, 0, 0, 1
+			pos_hint: {'center_x': .416, 'center_y': .475}
+			size_hint: .166, .1
+			on_press: root.scale_text = "F Scale"
+			on_press: root.scale = "F Scale"
+			background_color: 0, 2.29, 2.55, 1
+
+		Button:
+			text: 'F# Scale' if root.is_sharp == True else 'Gb Scale'
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			font_size: 8
+			color: 0, 0, 0, 1
+			pos_hint: {'center_x': .582, 'center_y': .475}
+			size_hint: .166, .1
+			on_press: root.scale_text = "F# Scale" if root.is_sharp == True else "Gb Scale"
+			on_press: root.scale = "F# Scale"
+			background_color: 0, 2.29, 2.55, 1
+
+		Button:
+			text: 'G Scale'
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			font_size: 8
+			color: 0, 0, 0, 1
+			pos_hint: {'center_x': .748, 'center_y': .475}
+			size_hint: .166, .1
+			on_press: root.scale_text = "G Scale"
+			on_press: root.scale = "G Scale"
+			background_color: 0, 2.29, 2.55, 1
+
+		Button:
+			text: 'G# Scale' if root.is_sharp == True else 'Ab Scale'
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			font_size: 8
+			color: 0, 0, 0, 1
+			pos_hint: {'center_x': .914, 'center_y': .475}
+			size_hint: .166, .1
+			on_press: root.scale_text = "G# Scale" if root.is_sharp == True else "Ab Scale"
+			on_press: root.scale = "G# Scale"
+			background_color: 0, 2.29, 2.55, 1
+
+		Label:
+			text: "Recording" if root.is_recording == True else "Not Recording"
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			font_size: 8
+			color: .9, .9, .9, 1
+			pos_hint: {'center_x': .5, 'center_y': .35}
+			font_size: '24sp'
+
+		Label:
+			text: "Compare to a scale"
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			color: .9, .9, .9, 1
+			pos_hint: {'center_x': .5, 'center_y': .3}
+			font_size: '16sp'
+
+			
+		ToggleButton:
+			text: 'Record'
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			font_size: 12
+			color: 0, 0, 0, 1
+			pos_hint: {'center_x': .5, 'center_y': .2}
+			size_hint: .25, .1
+			on_press: root.record_scale(self.state)
+			background_color: 0, 2.29, 2.55, 1
+
+
+<Analysis>:
+	name: 'analysis'
+	
+	FloatLayout:
+
+		Button:
+			text: "Major"
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			font_size: 8
+			color: 0, 0, 0, 1
+			pos_hint: {'center_x': .125, 'center_y': .95}
+			size_hint: .25, .1
+			on_press: root.is_major = True
+			background_color: 0, 2.29, 2.55, 1
+
+		Button:
+			text: "Minor"
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			font_size: 8
+			color: 0, 0, 0, 1
+			pos_hint: {'center_x': .875, 'center_y': .95}
+			size_hint: .25, .1
+			on_press: root.is_major = False
+			background_color: 0, 2.29, 2.55, 1
+
+		Label:
+			text: root.pitch_text
+			font_name: 'Oxygen/Oxygen-Bold.ttf'
+			color: .9, .9, .9, 1
+			pos_hint: {'center_x': .5, 'center_y': .85}
+			font_size: '28'
+
+		Label:
+			text: "Major" if root.is_major == True else "Minor"
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			color: .9, .9, .9, 1
+			pos_hint: {'center_x': .5, 'center_y': .75}
+			font_size: '24sp'
+
+
+		Label:
+			text: "Recording" if root.is_recording == True else "Not Recording"
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			color: .9, .9, .9, 1
+			pos_hint: {'center_x': .5, 'center_y': .35}
+			font_size: '24sp'
+
+		Label:
+			text: "BPM: "  + root.bpm
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			color: .9, .9, .9, 1
+			pos_hint: {'center_x': .5, 'center_y': .6}
+			font_size: '24sp'
+
+		Label:
+			text: "KEY: " + root.key
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			color: .9, .9, .9, 1
+			pos_hint: {'center_x': .5, 'center_y': .5}
+			font_size: '24sp'
+
+		Label:
+			text: 'Analyze the BPM and key'
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			color: .9, .9, .9, 1
+			pos_hint: {'center_x': .5, 'center_y': .3}
+			font_size: '16sp'
+
+		ToggleButton:
+			id: recordanal
+			text: "Record"
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			font_size: 12
+			color: 0, 0, 0, 1
+			size_hint: .25, .1
+			pos_hint: {'center_x': .5, 'center_y': .2}
+			on_press: root.analyze_init(self.state)
+			background_color: 0, 2.29, 2.55, 1
+
+<Tuner>:
+	name: 'tuner'
+	font_name: 'Oxygen/Oxygen-Regular.ttf'
+
+	FloatLayout:
+
+		Label:
+			text: 'Sharp'
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			pos_hint: {'center_x': .5, 'center_y': .7}
+			font_size: '24sp'
+			color: .9, .9, .9, 1
+
+		Label:
+			text: root.note_text
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			pos_hint: {'center_x': .5, 'center_y': .5}
+			font_size: '32sp'
+			color: root.color_red, root.color_green, root.color_blue, 1
+
+		Label:
+			text: root.cent_text
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			pos_hint: {'center_x': .5, 'center_y': root.posy}
+			font_size: '32sp'
+			color: root.color_red, root.color_green, root.color_blue, 1
+
+		Label:
+			text: 'Flat'
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			pos_hint: {'center_x': .5, 'center_y': .3}
+			font_size: '24sp'
+			color: .9, .9, .9, 1
+
+		Label:
+			text: 'Tuner'
+			font_name: 'Oxygen/Oxygen-Bold.ttf'
+			color: .9, .9, .9, 1
+			pos_hint: {'center_x': .5, 'center_y': .85}
+			font_size: '32sp'
+
+<Metronome>:
+	name: 'metronome'
+	font_name: 'Oxygen/Oxygen-Regular.ttf'
+
+	FloatLayout:
+
+		Label:
+			text: 'Metronome'
+			font_name: 'Oxygen/Oxygen-Bold.ttf'
+			color: .9, .9, .9, 1
+			pos_hint: {'center_x': .5, 'center_y': .85}
+			font_size: '32sp'
+
+		Label:
+			text: 'Enter the BPM'
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			font_size: '24sp'
+			color: .9, .9, .9, 1
+			pos_hint: {'center_x': .5, 'center_y': .775}
+
+		TextInput: 
+			id: metinput
+			hint_text: 'BPM'
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			pos_hint: {'center_x': .5, 'center_y': .7125}
+			size_hint: (None, None)
+			height: 30
+			width: 100
+
+		Label:
+			text: 'Format: ' + root.format_text
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			color: .9, .9, .9, 1
+			pos_hint: {'center_x': .5, 'center_y': .65}
+			font_size: '24'
+
+		Button:
+			text: '2/2'
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			font_size: 8
+			color: 0, 0, 0, 1
+			pos_hint: {'center_x': .1, 'center_y': .525}
+			size_hint: .2, .1
+			on_press: root.format_text = '2/2'
+			background_color: 0, 2.29, 2.55, 1
+
+		Button:
+			text: '2/4'
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			font_size: 8
+			color: 0, 0, 0, 1
+			pos_hint: {'center_x': .3, 'center_y': .525}
+			size_hint: .2, .1
+			on_press: root.format_text = '2/4'
+			background_color: 0, 2.29, 2.55, 1
+
+		Button:
+			text: '3/4'
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			font_size: 8
+			color: 0, 0, 0, 1
+			pos_hint: {'center_x': .5, 'center_y': .525}
+			size_hint: .2, .1
+			on_press: root.format_text = '3/4'
+			background_color: 0, 2.29, 2.55, 1
+
+		Button:
+			text: '4/4'
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			font_size: 8
+			color: 0, 0, 0, 1
+			pos_hint: {'center_x': .7, 'center_y': .525}
+			size_hint: .2, .1
+			on_press: root.format_text = '4/4'
+			background_color: 0, 2.29, 2.55, 1
+
+		Button:
+			text: '5/4'
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			font_size: 8
+			color: 0, 0, 0, 1
+			pos_hint: {'center_x': .9, 'center_y': .525}
+			size_hint: .2, .1
+			on_press: root.format_text = '5/4'
+			background_color: 0, 2.29, 2.55, 1
+
+		Button:
+			text: '3/8'
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			font_size: 8
+			color: 0, 0, 0, 1
+			pos_hint: {'center_x': .1, 'center_y': .425}
+			size_hint: .2, .1
+			on_press: root.format_text = '3/8'
+			background_color: 0, 2.29, 2.55, 1
+
+		Button:
+			text: '6/8'
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			font_size: 8
+			color: 0, 0, 0, 1
+			pos_hint: {'center_x': .3, 'center_y': .425}
+			size_hint: .2, .1
+			on_press: root.format_text = '6/8'
+			background_color: 0, 2.29, 2.55, 1
+
+		Button:
+			text: '9/8'
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			font_size: 8
+			color: 0, 0, 0, 1
+			pos_hint: {'center_x': .5, 'center_y': .425}
+			size_hint: .2, .1
+			on_press: root.format_text = '9/8'
+			background_color: 0, 2.29, 2.55, 1
+
+		Button:
+			text: '12/8'
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			font_size: 8
+			color: 0, 0, 0, 1
+			pos_hint: {'center_x': .7, 'center_y': .425}
+			size_hint: .2, .1
+			on_press: root.format_text = '12/8'
+			background_color: 0, 2.29, 2.55, 1
+
+		Button:
+			text: '6/4'
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			font_size: 8
+			color: 0, 0, 0, 1
+			pos_hint: {'center_x': .9, 'center_y': .425}
+			size_hint: .2, .1
+			on_press: root.format_text = '6/4'
+			background_color: 0, 2.29, 2.55, 1
+
+		Label:
+			text: root.met_text
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			font_size: 8
+			color: .9, .9, .9, 1
+			pos_hint: {'center_x': .5, 'center_y': .3}
+			font_size: '24sp'
+
+		ToggleButton:
+			id: mettoggle
+			text: 'ON' if self.state == 'down' else 'OFF'
+			font_name: 'Oxygen/Oxygen-Regular.ttf'
+			font_size: 12
+			color: 0, 0, 0, 1
+			size_hint: .25, .1
+			pos_hint: {'center_x': .5, 'center_y': .2}
+			on_press: root.met(self.state, metinput.text)
+			background_color: 0, 2.29, 2.55, 1
