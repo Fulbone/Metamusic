@@ -42,6 +42,7 @@ class Comparison(ScreenWrapper):
 	is_recording = BooleanProperty()
 	is_sharp = BooleanProperty()
 	is_right = BooleanProperty()
+	is_correct = StringProperty()
 
 	def __init__(self, **kwargs):
 		super(Comparison, self).__init__(**kwargs)
@@ -51,6 +52,7 @@ class Comparison(ScreenWrapper):
 		self.is_recording = False
 		self.is_sharp = True
 		self.is_right = True
+		self.is_correct = ''
 		self.scale_dict = {
 		"A Scale": ['A', 'B', 'C#', 'D', 'E', 'F#', 'G#'],
 		"A# Scale": ['A#', 'C', 'D', 'D#', 'F', 'G', 'A'],
@@ -96,9 +98,11 @@ class Comparison(ScreenWrapper):
 					self.is_right = False
 		if self.is_right == True:
 			print('You are Correct!')
+			self.is_correct = 'You were Correct!'
 			playsound('music/victory.wav')
 		else:
 			print('You are incorrect.')
+			self.is_correct = 'You were Incorrect'
 			playsound('music/failure.wav')
 			self.is_right = True
 
@@ -135,17 +139,17 @@ class Analysis(ScreenWrapper):
 		"G#": ['G#', 'A#', 'C', 'C#', 'D#', 'F', 'G']
 		}
 		self.minor_dict = {
-		"A": ['A', 'B', 'C', 'D', 'E', 'F', 'G#'],
-		"A#": ['A#', 'C', 'C#', 'D#', 'F', 'G#', 'A#'],
+		"A": ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
+		"A#": ['A#', 'C', 'C#', 'D#', 'F', 'F#', 'G#'],
 		"B": ['B', 'C#', 'D', 'E', 'F#', 'G', 'A'],
 		"C": ['C', 'D', 'D#', 'F', 'G', 'G#', 'A#'],
-		"C#": ['C#', 'D#', 'E', 'F#', 'G#', 'A', 'C'],
+		"C#": ['C#', 'D#', 'E', 'F#', 'G#', 'A', 'B'],
 		"D": ['D', 'E', 'F', 'G', 'A', 'A#', 'C'],
 		"D#": ['D#', 'F', 'F#', 'G#', 'A#', 'B', 'C#'],
 		"E": ['E', 'F#', 'G', 'A', 'B', 'C', 'D'],
 		"F": ['F', 'G', 'G#', 'A#', 'C', 'C#', 'D#'],
 		"F#": ['F#', 'G#', 'A', 'B', 'C#', 'D', 'E'],
-		"G": ['G', 'A', 'A#', 'C', 'D', 'E', 'F#'],
+		"G": ['G', 'A', 'A#', 'C', 'D', 'E', 'F'],
 		"G#": ['G#', 'A#', 'B', 'C#', 'D#', 'E', 'F#']
 		}
 
@@ -423,13 +427,12 @@ class Tuner(ScreenWrapper):
 				self.note_text = freq2note(pitch)
 				self.cent_text = str(pitch_cent)
 				if pitch_cent < 0:
-					self.posy = .45
+					self.posy = .4
 				else:
-					self.posy = .65
+					self.posy = .6
 				self.color_red = round((abs(pitch_cent) * .051), 3) 
 				self.color_green = round(((abs(pitch_cent) * -.051) + 2.55), 3)
 				print(f"Green: {self.color_green} Red: {self.color_red}")
-				sleep(.05)
 			#print(freq2note(pitch))
 
 		raise Exception("Thread Terminated") # Terminates the thread
@@ -443,7 +446,7 @@ class Metronome(ScreenWrapper):
 
 	def __init__(self, **kwargs):
 		super(Metronome, self).__init__(**kwargs) 
-		self.met_text = "Metronome OFF"
+		self.met_text = ""
 		self.format_text = 'None'
 		self.met_format = 4 
 		self.clock = None
@@ -454,22 +457,24 @@ class Metronome(ScreenWrapper):
 		self.bpm = bpm
 		if self.state == 'down':
 			if self.bpm.isdigit() == False :
-				self.met_text = "Input was not a natural number"
+				self.met_text = "Input the BPM"
 			else:
 				self.bpm = int(self.bpm)
 				if self.bpm < 1:
-					self.met_text = "Input was not a natural number"
+					self.met_text = "Input the BPM"
 				else:
-					self.bpm = 60/self.bpm
-					self.met_text = "Metronome ON"
-					self.t = Thread(target=Metronome.playmet, args=(self, self.bpm))
-					self.is_running = True
-					self.t.daemon = True
-					self.t.start()
+					if self.format_text == "":
+						self.met_text = "Select a format"
+					else:
+						self.bpm = 60/self.bpm
+						self.met_text = ""
+						self.t = Thread(target=Metronome.playmet, args=(self, self.bpm))
+						self.is_running = True
+						self.t.daemon = True
+						self.t.start()
 
 		# Kills the thread running the Metronome
 		else:
-			self.met_text = "Metronome OFF"
 			self.is_running = False
 
 	# Plays the metronome sound
@@ -494,6 +499,12 @@ class Metronome(ScreenWrapper):
 				else:
 					playsound('music/lowmet.wav')
 				sleep(bpm - .034)
+			elif self.format_text == '3/8':
+				if counter == 0 or counter%3 == 0:
+					playsound('music/highmet.wav')
+				else:
+					playsound('music/lowmet.wav')
+				sleep((bpm/3) - .034)
 			elif self.format_text == '6/8':
 				if counter == 0 or counter%6 == 0:
 					playsound('music/highmet.wav')
@@ -502,8 +513,36 @@ class Metronome(ScreenWrapper):
 				else:
 					playsound('music/lowmet.wav')
 				sleep((bpm/3) - .034)
+			elif self.format_text == '9/8':
+				if counter == 0 or counter%9 == 0:
+					playsound('music/highmet.wav')
+				elif counter%3 == 0:
+					playsound('music/medmet.wav')
+				else:
+					playsound('music/lowmet.wav')
+				sleep((bpm/3) - .034)
+			elif self.format_text == '12/8':
+				if counter == 0 or counter%12 == 0:
+					playsound('music/highmet.wav')
+				elif counter%3 == 0:
+					playsound('music/medmet.wav')
+				else:
+					playsound('music/lowmet.wav')
+				sleep((bpm/3) - .034)
 			elif self.format_text == '2/2':
-				if counter%2 == 0:
+				if counter == 0 or counter%2 == 0:
+					playsound('music/highmet.wav')
+				else:
+					playsound('music/lowmet.wav')
+				sleep((bpm/2) - .034)
+			elif self.format_text == '5/4':
+				if counter == 0 or counter%5 == 0:
+					playsound('music/highmet.wav')
+				else:
+					playsound('music/lowmet.wav')
+				sleep(bpm - .034)
+			elif self.format_text == '6/4':
+				if counter == 0 or counter%6 == 0:
 					playsound('music/highmet.wav')
 				else:
 					playsound('music/lowmet.wav')
