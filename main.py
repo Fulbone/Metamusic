@@ -1,4 +1,31 @@
-__version__ = '1.0.0'
+"""
+MMMMMMMM               MMMMMMMM                             tttt                                                                                         iiii                           
+M:::::::M             M:::::::M                          ttt:::t                                                                                        i::::i                          
+M::::::::M           M::::::::M                          t:::::t                                                                                         iiii                           
+M:::::::::M         M:::::::::M                          t:::::t                                                                                                                        
+M::::::::::M       M::::::::::M    eeeeeeeeeeee    ttttttt:::::ttttttt      aaaaaaaaaaaaa      mmmmmmm    mmmmmmm   uuuuuu    uuuuuu      ssssssssss   iiiiiii     cccccccccccccccc     
+M:::::::::::M     M:::::::::::M  ee::::::::::::ee  t:::::::::::::::::t      a::::::::::::a   mm:::::::m  m:::::::mm u::::u    u::::u    ss::::::::::s  i:::::i   cc:::::::::::::::c     
+M:::::::M::::M   M::::M:::::::M e::::::eeeee:::::eet:::::::::::::::::t      aaaaaaaaa:::::a m::::::::::mm::::::::::mu::::u    u::::u  ss:::::::::::::s  i::::i  c:::::::::::::::::c     
+M::::::M M::::M M::::M M::::::Me::::::e     e:::::etttttt:::::::tttttt               a::::a m::::::::::::::::::::::mu::::u    u::::u  s::::::ssss:::::s i::::i c:::::::cccccc:::::c     
+M::::::M  M::::M::::M  M::::::Me:::::::eeeee::::::e      t:::::t              aaaaaaa:::::a m:::::mmm::::::mmm:::::mu::::u    u::::u   s:::::s  ssssss  i::::i c::::::c     ccccccc     
+M::::::M   M:::::::M   M::::::Me:::::::::::::::::e       t:::::t            aa::::::::::::a m::::m   m::::m   m::::mu::::u    u::::u     s::::::s       i::::i c:::::c                  
+M::::::M    M:::::M    M::::::Me::::::eeeeeeeeeee        t:::::t           a::::aaaa::::::a m::::m   m::::m   m::::mu::::u    u::::u        s::::::s    i::::i c:::::c                  
+M::::::M     MMMMM     M::::::Me:::::::e                 t:::::t    tttttta::::a    a:::::a m::::m   m::::m   m::::mu:::::uuuu:::::u  ssssss   s:::::s  i::::i c::::::c     ccccccc     
+M::::::M               M::::::Me::::::::e                t::::::tttt:::::ta::::a    a:::::a m::::m   m::::m   m::::mu:::::::::::::::uus:::::ssss::::::si::::::ic:::::::cccccc:::::c     
+M::::::M               M::::::M e::::::::eeeeeeee        tt::::::::::::::ta:::::aaaa::::::a m::::m   m::::m   m::::m u:::::::::::::::us::::::::::::::s i::::::i c:::::::::::::::::c     
+M::::::M               M::::::M  ee:::::::::::::e          tt:::::::::::tt a::::::::::aa:::am::::m   m::::m   m::::m  uu::::::::uu:::u s:::::::::::ss  i::::::i  cc:::::::::::::::c     
+MMMMMMMM               MMMMMMMM    eeeeeeeeeeeeee            ttttttttttt    aaaaaaaaaa  aaaammmmmm   mmmmmm   mmmmmm    uuuuuuuu  uuuu  sssssssssss    iiiiiiii    cccccccccccccccc  
+Licensed under the MIT License
+Metamusic was a project for the Congressional App Challenge of 2020
+It was created by Jake Fulford and Will Sugden.
+Metamusic is able to tell if one is playing a musical scale correctly.
+It can analyze the bpm and a key of a recording.
+It also has a built in tuner and metronome.
+And to my Band Director, thank you for these amazing years! Sorry that you can't hear us play. :(
+"""
+
+# Importing
+print("Loading...")
 import sys
 import aubio
 from aubio import source, pitch, tempo, midi2note, freq2note, note2freq
@@ -12,7 +39,9 @@ from time import sleep
 from math import log
 from threading import Thread
 import kivy
-kivy.require('1.11.1')
+kivy.require('1.11.1') # Requires kivy version 1.11.1
+from kivy.config import Config 
+Config.set('graphics', 'resizable', False)
 from kivy.app import App 
 from kivy.uix.screenmanager import ScreenManager, Screen 
 from kivy.properties import StringProperty, NumericProperty, BooleanProperty, ObjectProperty
@@ -27,6 +56,7 @@ class WindowManager(ScreenManager):
 	pass
 		
 
+#Controls the Title Screen
 class TitleScreen(Screen):
 	pass
 
@@ -36,6 +66,7 @@ class ScreenWrapper(Screen):
 	pass
 
 
+# Handles the Comparison Screen
 class Comparison(ScreenWrapper):
 
 	compare_text = StringProperty()
@@ -70,6 +101,7 @@ class Comparison(ScreenWrapper):
 		"G# Scale": ['G#', 'A#', 'C', 'C#', 'D#', 'F', 'G']
 		}
 
+	# Starts the thread that records and compares scales
 	def record_scale(self, state):
 		if self.scale == "":
 			self.is_correct = "Select a Scale"
@@ -84,6 +116,7 @@ class Comparison(ScreenWrapper):
 			else:
 				self.is_recording = False
 
+	# Calls the funcs to compare the scales
 	def record_compare(self):
 		self.gate = True
 		while self.state == 'down':
@@ -108,9 +141,12 @@ class Comparison(ScreenWrapper):
 			playsound('music/failure.wav')
 			self.is_right = True
 
+	# Stops recording on leave
 	def on_leave(self):
 		self.is_recording = False
 
+
+# Handles the Analysis Screen
 class Analysis(ScreenWrapper):
 
 	pitch_text = StringProperty()
@@ -155,10 +191,12 @@ class Analysis(ScreenWrapper):
 		"G#": ['G#', 'A#', 'B', 'C#', 'D#', 'E', 'F#']
 		}
 
+	# Sets the bpm and key to "None" on enter
 	def on_enter(self):
 		self.bpm = "None"
 		self.key = "None"
 
+	# Starts the thread that analyzes a recording
 	def analyze_init(self, state):
 		self.state = state
 		if self.state == 'down':
@@ -170,12 +208,15 @@ class Analysis(ScreenWrapper):
 		else:
 			self.is_recording = False
 
+	# Calls the funcs to analyze
 	def analyze(self):
 		self.gate = True
 		while self.state == 'down':
 			if self.gate == True:
 				Analysis.record_init(self, self.state)
 				self.gate = False
+		while path.exists('output.wav') == False:
+			pass
 		Analysis.get_bpm_init(self, 'output.wav')
 		self.bpm = str(round(self.q.get(), 2))
 		self.gate = True
@@ -191,12 +232,14 @@ class Analysis(ScreenWrapper):
 			self.key = str(key)
 		raise Exception("Thread Terminated")
 
+	# Starts the key analysis
 	def get_key_init(self, filename):
 		self.filename = filename
 		t = Thread(target=Analysis.get_key, args=(self,))
 		t.daemon = True
 		t.start()
 
+	# Analyses the key from a recording
 	def get_key(self):
 		Analysis.get_pitch_init(self, self.filename)
 		notes = self.q.get()
@@ -217,12 +260,14 @@ class Analysis(ScreenWrapper):
 		self.key_running = False
 		raise Exception("Thread Terminated")
 
+	# Starts the BPM analysis
 	def get_bpm_init(self, filename):
 		self.filename = filename
 		t = Thread(target=Analysis.get_bpm, args=(self,))
 		t.daemon = True
 		t.start()
 
+	# Gets the BPM from a recording
 	def get_bpm(self):
 	    samplerate, win_s, hop_s = 44100, 1024, 512
 
@@ -244,8 +289,8 @@ class Analysis(ScreenWrapper):
 	        if read < hop_s:
 	            break
 
+	    # Changes the beats into BPM
 	    def beats_to_bpm(beats):
-	        # If enough beats are found, convert to periods then to bpm
 	        if len(beats) > 1:
 	            if len(beats) < 4:
 	                print("Few beats found")
@@ -258,25 +303,22 @@ class Analysis(ScreenWrapper):
 	    self.q.put(beats_to_bpm(beats))
 	    raise Exception("Thread Terminated")
 
+	# Starts the pitch analysis
 	def get_pitch_init(self, filename):
 		self.filename = filename
 		self.t = Thread(target=Analysis.get_pitch, args=(self,))
 		self.t.daemon = True
 		self.t.start()
 
-	# Gets the musical notes from a file
-	def get_pitch(self):
-		if path.exists(self.filename) == False:
-			self.pitch_text = "Path does not exist"
-			raise Exception(f"File Path to {self.filename} does not exist")
+	# Gets the pitches from a recording
+	def get_pitch(self):		
+		while path.exists('output.wav') == False:
+			pass
 
 		else:
-			downsample = 1
-			samplerate = 44100 // downsample
-			if len( sys.argv ) > 2: samplerate = int(sys.argv[2])
-
-			win_s = 4096 // downsample # fft size
-			hop_s = 512  // downsample # hop size
+			samplerate = 44100
+			win_s = 4096
+			hop_s = 512
 
 			s = source(self.filename, samplerate, hop_s)
 			samplerate = s.samplerate
@@ -299,7 +341,6 @@ class Analysis(ScreenWrapper):
 			    pitch_midi = int(round(pitch_midi))
 			    confidence = pitch_o.get_confidence()
 			    if confidence < 0.9: pitch_midi = 0.
-			    #print("%f %f %f" % (total_frames / float(samplerate), pitch, confidence))
 			    if len(pitches) == 0 and pitch_midi != 0:
 			    	pitches.append(pitch_midi)
 			    elif len(pitches) > 0:
@@ -308,20 +349,17 @@ class Analysis(ScreenWrapper):
 			    else:
 			    	pass
 			    
-			    #print(pitches)
 			    confidences += [confidence]
 			    total_frames += read
 			    if read < hop_s: break
 
-			if 0: sys.exit(0)
 			notes = []
 			for midi in pitches:
 				note = midi2note(midi)
 				notes.append(note.strip("0123456789"))
 
-			#print(notes)
 			self.q.put(notes)
-			#raise Exception("Thread Terminated")
+			raise Exception("Thread Terminated")
 
 	# Starts the thread to record from mic
 	def record_init(self, state):
@@ -360,6 +398,7 @@ class Analysis(ScreenWrapper):
 		stream.close()
 		p.terminate()
 
+		# Converts the array into a .wav file
 		wf = wave.open(wave_output_filename, 'wb')
 		wf.setnchannels(channels)
 		wf.setsampwidth(p.get_sample_size(wavformat))
@@ -368,10 +407,12 @@ class Analysis(ScreenWrapper):
 		wf.close()
 		raise Exception("Thread Terminated")
 
+	# Stops recording on leave
 	def on_leave(self):
 		self.state = 'up'
 
 
+# Handles the Tuner Screen
 class Tuner(ScreenWrapper):
 	
 	note_text = StringProperty()
@@ -380,6 +421,7 @@ class Tuner(ScreenWrapper):
 	color_red = NumericProperty()
 	color_green = NumericProperty()
 	color_blue = NumericProperty()
+
 
 	def __init__(self, **kwargs):
 		super(Tuner, self).__init__(**kwargs)
@@ -425,26 +467,28 @@ class Tuner(ScreenWrapper):
 			pitch = pDetection(samples)[0]
 
 			if pitch != 0:
-				pitch_cent = round(1200 * log(pitch / note2freq(freq2note(pitch)), 2), 2)
+				pitch_cent = round(1200 * log(pitch / note2freq(freq2note(pitch)), 2), 2) # Converts Hz to Cents
 				self.note_text = freq2note(pitch)
 				self.cent_text = str(pitch_cent)
 				if pitch_cent < 0:
 					self.posy = .4
 				else:
 					self.posy = .6
-				self.color_red = round((abs(pitch_cent) * .051), 3) 
-				self.color_green = round(((abs(pitch_cent) * -.051) + 2.55), 3)
+				self.color_red = round((abs(pitch_cent) * .051), 3) # Calculates the red 
+				self.color_green = round(((abs(pitch_cent) * -.051) + 2.55), 3) # Calculates the green
 				print(f"Green: {self.color_green} Red: {self.color_red}")
-			#print(freq2note(pitch))
 
 		raise Exception("Thread Terminated") # Terminates the thread
 
 
+# Handles the Metronome Screen
 class Metronome(ScreenWrapper):
 	
 	met_text = StringProperty()
 	format_text = StringProperty()
 	met_format = NumericProperty()
+	counter = NumericProperty()
+	image_source = StringProperty()
 
 	def __init__(self, **kwargs):
 		super(Metronome, self).__init__(**kwargs) 
@@ -452,20 +496,22 @@ class Metronome(ScreenWrapper):
 		self.format_text = 'None'
 		self.met_format = 4 
 		self.clock = None
+		self.counter = 0 
+		self.image_source = 'images/metmed.png'
 
 	# Schedules the met to be played
 	def met(self, state, bpm):
 		self.state = state
 		self.bpm = bpm
-		if self.state == 'down':
-			if self.bpm.isdigit() == False :
+		if self.state == 'down': # Checks if state is down
+			if self.bpm.isdigit() == False: # Checks if the BPM is a int
 				self.met_text = "Input the BPM"
 			else:
 				self.bpm = int(self.bpm)
-				if self.bpm < 1:
+				if self.bpm < 1: # Checks if the BPM is less than 1
 					self.met_text = "Input the BPM"
 				else:
-					if self.format_text == "":
+					if self.format_text == "": # Checks if no format was selected
 						self.met_text = "Select a format"
 					else:
 						self.bpm = 60/self.bpm
@@ -481,70 +527,75 @@ class Metronome(ScreenWrapper):
 
 	# Plays the metronome sound
 	def playmet(self, bpm):
-		counter = 0
+		self.counter = 0
 		while self.is_running == True:
+			if self.counter%2 == 0 or self.counter == 0:
+				self.image_source = 'images/metleft.png'
+			else:
+				self.image_source = 'images/metright.png'
+
 			if self.format_text == '2/4':
-				if counter == 0 or counter%2 == 0:
+				if self.counter == 0 or self.counter%2 == 0:
 					playsound('music/highmet.wav')
 				else:
 					playsound('music/lowmet.wav')
 				sleep(bpm - .034)
 			elif self.format_text == '3/4':
-				if counter == 0 or counter%3 == 0:
+				if self.counter == 0 or self.counter%3 == 0:
 					playsound('music/highmet.wav')
 				else:
 					playsound('music/lowmet.wav')
 				sleep(bpm - .034)
 			elif self.format_text == '4/4':
-				if counter == 0 or counter%4 == 0:
+				if self.counter == 0 or self.counter%4 == 0:
 					playsound('music/highmet.wav')
 				else:
 					playsound('music/lowmet.wav')
 				sleep(bpm - .034)
 			elif self.format_text == '3/8':
-				if counter == 0 or counter%3 == 0:
+				if self.counter == 0 or self.counter%3 == 0:
 					playsound('music/highmet.wav')
 				else:
 					playsound('music/lowmet.wav')
 				sleep((bpm/3) - .034)
 			elif self.format_text == '6/8':
-				if counter == 0 or counter%6 == 0:
+				if self.counter == 0 or self.counter%6 == 0:
 					playsound('music/highmet.wav')
-				elif counter%3 == 0:
+				elif self.counter%3 == 0:
 					playsound('music/medmet.wav')
 				else:
 					playsound('music/lowmet.wav')
 				sleep((bpm/3) - .034)
 			elif self.format_text == '9/8':
-				if counter == 0 or counter%9 == 0:
+				if self.counter == 0 or self.counter%9 == 0:
 					playsound('music/highmet.wav')
-				elif counter%3 == 0:
+				elif self.counter%3 == 0:
 					playsound('music/medmet.wav')
 				else:
 					playsound('music/lowmet.wav')
 				sleep((bpm/3) - .034)
 			elif self.format_text == '12/8':
-				if counter == 0 or counter%12 == 0:
+				if self.counter == 0 or self.counter%12 == 0:
 					playsound('music/highmet.wav')
-				elif counter%3 == 0:
+				elif self.counter%3 == 0:
 					playsound('music/medmet.wav')
 				else:
 					playsound('music/lowmet.wav')
 				sleep((bpm/3) - .034)
 			elif self.format_text == '2/2':
-				if counter == 0 or counter%2 == 0:
+				if self.counter == 0 or self.counter%2 == 0:
 					playsound('music/highmet.wav')
 				else:
 					playsound('music/lowmet.wav')
 				sleep((bpm/2) - .034)
 			elif self.format_text == '5/4':
-				if counter == 0 or counter%5 == 0:
+				if self.counter == 0 or self.counter%5 == 0:
 					playsound('music/highmet.wav')
 				else:
 					playsound('music/lowmet.wav')
 				sleep(bpm - .034)
 			elif self.format_text == '6/4':
-				if counter == 0 or counter%6 == 0:
+				if self.counter == 0 or self.counter%6 == 0:
 					playsound('music/highmet.wav')
 				else:
 					playsound('music/lowmet.wav')
@@ -552,14 +603,16 @@ class Metronome(ScreenWrapper):
 			else:
 				pass
 
-			counter += 1
+			self.counter += 1
 		raise Exception("Thread Terminated")
 
 
+# Builds the App
 class MetamusicApp(App):
 
 	def build(self):
-		Window.clearcolor = (.3, .3, .3, 1)
+		Window.clearcolor = (.3, .3, .3, 1) # Changes the Background color
+		self.icon = 'images/logo.png' # Changes the Icon
 
 if __name__ == '__main__':
-	MetamusicApp().run()
+	MetamusicApp().run() # Runs the app
