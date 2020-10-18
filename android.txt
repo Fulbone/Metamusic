@@ -1,3 +1,0 @@
-title=Metamusic
-author=Fulbone
-orientation=portrait
