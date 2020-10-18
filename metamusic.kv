@@ -131,6 +131,18 @@ WindowManager:
 			on_press: root.is_sharp = False
 			background_color: 0, 2.29, 2.55, 1
 
+		Image:
+			source: 'images/sharp.png'
+			size_hint_x: .08
+			size_hint_y: .08
+			pos_hint: {'center_x': .05, 'center_y': .95}
+
+		Image:
+			source: 'images/flat.png'
+			size_hint_x: .08
+			size_hint_y: .08
+			pos_hint: {'center_x': .95, 'center_y': .95}
+
 		Button:
 			text: 'A Scale'
 			font_name: 'Oxygen/Oxygen-Regular.ttf'
@@ -377,9 +389,15 @@ WindowManager:
 		Label:
 			text: 'Sharp'
 			font_name: 'Oxygen/Oxygen-Regular.ttf'
-			pos_hint: {'center_x': .5, 'center_y': .7}
+			pos_hint: {'center_x': .4, 'center_y': .7}
 			font_size: '24sp'
 			color: .9, .9, .9, 1
+
+		Image:
+			source: 'images/sharp.png'
+			size_hint_x: .1
+			size_hint_y: .1
+			pos_hint: {'center_x': .5, 'center_y': .7}
 
 		Label:
 			text: root.note_text
@@ -398,9 +416,15 @@ WindowManager:
 		Label:
 			text: 'Flat'
 			font_name: 'Oxygen/Oxygen-Regular.ttf'
-			pos_hint: {'center_x': .5, 'center_y': .3}
+			pos_hint: {'center_x': .4, 'center_y': .3}
 			font_size: '24sp'
 			color: .9, .9, .9, 1
+
+		Image:
+			source: 'images/flat.png'
+			size_hint_x: .1
+			size_hint_y: .1
+			pos_hint: {'center_x': .5, 'center_y': .3}
 
 		Label:
 			text: 'Tuner'
