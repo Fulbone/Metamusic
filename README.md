@@ -1,5 +1,4 @@
-
-### Metamusic
+﻿### Metamusic
 
 Licensed under the MIT License.
 Metamusic was a project for the Congressional App Challenge of 2020.
