@@ -123,6 +123,10 @@ class Comparison(ScreenWrapper):
 			if self.gate == True:
 				Analysis.record_init(self, self.state)
 				self.gate = False
+		if path.exists('output.wav') == False:
+			sleep(1)
+			if path.exists('output.wav') == False:
+				raise Exception("No file found")
 		Analysis.get_pitch_init(self, 'output.wav')
 		self.notes = self.q.get()
 		if len(self.notes) < len(self.scale_dict[self.scale]):
@@ -215,10 +219,16 @@ class Analysis(ScreenWrapper):
 			if self.gate == True:
 				Analysis.record_init(self, self.state)
 				self.gate = False
-		while path.exists('output.wav') == False:
-			pass
+		if path.exists('output.wav') == False:
+			sleep(1)
+			if path.exists('output.wav') == False:
+				raise Exception("No file found")
 		Analysis.get_bpm_init(self, 'output.wav')
-		self.bpm = str(round(self.q.get(), 2))
+		bpm = self.q.get()
+		if bpm == 0:
+			self.bpm = "Unsure"
+		else:
+			self.bpm = str(round(bpm, 2))
 		self.gate = True
 		self.key_running = True
 		while self.key_running == True:
@@ -399,13 +409,18 @@ class Analysis(ScreenWrapper):
 		p.terminate()
 
 		# Converts the array into a .wav file
-		wf = wave.open(wave_output_filename, 'wb')
-		wf.setnchannels(channels)
-		wf.setsampwidth(p.get_sample_size(wavformat))
-		wf.setframerate(rate)
-		wf.writeframes(b''.join(frames))
-		wf.close()
-		raise Exception("Thread Terminated")
+		if len(frames) == 0:
+			raise Exception('Not enough frames')
+		else:
+			wf = wave.open(wave_output_filename, 'wb')
+			wf.setnchannels(channels)
+			wf.setsampwidth(p.get_sample_size(wavformat))
+			wf.setframerate(rate)
+			wf.writeframes(b''.join(frames))
+			wf.close()
+			while path.exists('output.wav') == False:
+				pass
+			raise Exception("Thread Terminated")
 
 	# Stops recording on leave
 	def on_leave(self):
@@ -511,7 +526,7 @@ class Metronome(ScreenWrapper):
 				if self.bpm < 1: # Checks if the BPM is less than 1
 					self.met_text = "Input the BPM"
 				else:
-					if self.format_text == "": # Checks if no format was selected
+					if self.format_text == "None": # Checks if no format was selected
 						self.met_text = "Select a format"
 					else:
 						self.bpm = 60/self.bpm

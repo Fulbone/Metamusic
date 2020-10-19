@@ -1,5 +1,6 @@
 #:kivy 1.11.1
 
+
 WindowManager:
 	TitleScreen:
 	Comparison:
@@ -7,10 +8,12 @@ WindowManager:
 	Tuner:
 	Metronome:
 
+
 <TitleScreen>:
 	name: 'titlescreen'
 
 	FloatLayout:
+
 		Label:
 			text: 'Metamusic'
 			color: .9, .9, .9, 1
@@ -45,6 +48,7 @@ WindowManager:
 			size_hint_y: .3
 			pos_hint: {'center_x': .8, 'center_y': .5}
 
+
 <ScreenWrapper>:
 	BoxLayout:
 		orientation: 'vertical'
@@ -63,6 +67,7 @@ WindowManager:
 				font_size: 14
 				background_color: 0, 2.29, 2.55, 1
 				on_press: root.manager.current = 'comparison'
+
 			Button:
 				text: 'Analysis'
 				font_name: 'Oxygen/Oxygen-Regular.ttf'
@@ -70,6 +75,7 @@ WindowManager:
 				font_size: 14
 				background_color: 0, 2.29, 2.55, 1
 				on_press: root.manager.current = 'analysis'
+
 			Button:
 				text: 'Tuner'
 				font_name: 'Oxygen/Oxygen-Regular.ttf'
@@ -77,6 +83,7 @@ WindowManager:
 				font_size: 14
 				background_color: 0, 2.29, 2.55, 1
 				on_press: root.manager.current = 'tuner'
+
 			Button:
 				text: 'Met.'
 				font_name: 'Oxygen/Oxygen-Regular.ttf'
@@ -84,6 +91,7 @@ WindowManager:
 				font_size: 14
 				background_color: 0, 2.29, 2.55, 1
 				on_press: root.manager.current = 'metronome'
+
 
 <Comparison>:
 	name: 'comparison'
@@ -164,6 +172,7 @@ WindowManager:
 			on_press: root.scale_text = "A# Scale"  if root.is_sharp == True else "Bb Scale"
 			on_press: root.scale = "A# Scale"
 			background_color: 0, 2.29, 2.55, 1
+
 		Button:
 			text: 'B Scale'
 			font_name: 'Oxygen/Oxygen-Regular.ttf'
@@ -340,7 +349,6 @@ WindowManager:
 			pos_hint: {'center_x': .5, 'center_y': .75}
 			font_size: '24sp'
 
-
 		Label:
 			text: "Recording" if root.is_recording == True else "Not Recording"
 			font_name: 'Oxygen/Oxygen-Regular.ttf'
@@ -370,7 +378,6 @@ WindowManager:
 			font_size: '16sp'
 
 		ToggleButton:
-			id: recordanal
 			text: "Record"
 			font_name: 'Oxygen/Oxygen-Regular.ttf'
 			font_size: 14
@@ -596,7 +603,6 @@ WindowManager:
 			font_size: '24sp'
 
 		ToggleButton:
-			id: mettoggle
 			text: 'ON' if self.state == 'down' else 'OFF'
 			font_name: 'Oxygen/Oxygen-Regular.ttf'
 			font_size: 14
