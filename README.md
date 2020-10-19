@@ -15,6 +15,12 @@ Sometimes it take some time for it to start up, but be patient, it will eventual
 
 ["Set of Metronome"](https://www.vecteezy.com/vector-art/1268691-set-of-metronome) by [Vecteezy.com](https://www.vecteezy.com/) is licensed under [Free License](https://www.vecteezy.com/licensing-agreement)
 
+### Acknowledgements:
+
+To our friend Titus, for making the victory, failure, and metronome sounds.
+
+To the GBHS Band Director, for still trying to be the best, even though he can no longer here us play.
+
 
 
 
