@@ -19,7 +19,7 @@ Sometimes it take some time for it to start up, but be patient, it will eventual
 
 To our friend Titus, for making the victory, failure, and metronome sounds.
 
-To the GBHS Band Director, for still trying to be the best, even though he can no longer here us play.
+To the GBHS Band Director, for still trying to be the best, even though he can no longer hear us play.
 
 
 
