@@ -8,6 +8,12 @@ It can analyze the bpm and a key of a recording.
 It also has a built in tuner and metronome.
 Sometimes it take some time for it to start up, but be patient, it will eventually start.
 
+### Installation:
+Conda is required for installation
+Create Environment: conda env create -f Metamusic.yml
+Activate Environment: conda activate Metamusic
+Run main.py: python main.py
+
 ### Credits:
 ["Trombone PNG Clipart"](http://www.pngall.com/?p=8265) by [PNG All](http://www.pngall.com/) is licensed under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/)
 
