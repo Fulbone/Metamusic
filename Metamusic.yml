@@ -1,0 +1,54 @@
+name: Metamusic
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - aubio=0.4.9=py38haffbadd_5
+  - blas=1.0=mkl
+  - ca-certificates=2020.10.14=0
+  - certifi=2020.11.8=py38haa95532_0
+  - docutils=0.16=py38_1
+  - ffmpeg=4.3.1=ha925a31_0
+  - freetype=2.10.4=hd328e21_0
+  - glew=2.1.0=he025d50_0
+  - intel-openmp=2020.2=254
+  - jpeg=9d=h8ffe710_0
+  - kivy=2.0.0rc4=py38h7600b87_2
+  - libpng=1.6.37=h2a8f88b_0
+  - libtiff=4.1.0=h56a325e_1
+  - libwebp=1.0.2=hfa6e2cd_5
+  - lz4-c=1.9.2=hf4a77e7_3
+  - mkl=2020.2=256
+  - mkl-service=2.3.0=py38h196d8e1_0
+  - mkl_fft=1.2.0=py38h45dec08_0
+  - mkl_random=1.1.1=py38h47e9c7a_0
+  - numpy=1.19.2=py38hadc3359_0
+  - numpy-base=1.19.2=py38ha3acd2a_0
+  - olefile=0.46=py_0
+  - openssl=1.1.1h=he774522_0
+  - pillow=8.0.1=py38h4fa10fc_0
+  - pip=20.3=py38haa95532_0
+  - portaudio=19.6.0=he774522_4
+  - pyaudio=0.2.11=py38he774522_2
+  - pygments=2.7.2=pyhd3eb1b0_0
+  - python=3.8.5=h5fd99cc_1
+  - python_abi=3.8=1_cp38
+  - sdl2=2.0.12=h0e60522_1
+  - sdl2_image=2.0.5=hb9708c9_2
+  - sdl2_mixer=2.0.4=h6538335_0
+  - sdl2_ttf=2.0.15=h4636d2b_0
+  - setuptools=50.3.2=py38haa95532_2
+  - six=1.15.0=py38haa95532_0
+  - smpeg2=2.0.0=h6538335_1
+  - sqlite=3.33.0=h2a8f88b_0
+  - tk=8.6.10=he774522_0
+  - vc=14.1=h0510ff6_4
+  - vs2015_runtime=14.16.27012=hf0eaf9b_3
+  - wheel=0.36.0=pyhd3eb1b0_0
+  - wincertstore=0.2=py38_0
+  - xz=5.2.5=h62dcd97_0
+  - zlib=1.2.11=h62dcd97_4
+  - zstd=1.4.5=h04227a9_0
+  - pip:
+    - playsound==1.2.2
+prefix: C:\Users\Jake\anaconda3\envs\Metamusic
