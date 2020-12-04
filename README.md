@@ -9,7 +9,7 @@ It also has a built in tuner and metronome.
 Sometimes it take some time for it to start up, but be patient, it will eventually start.
 
 ### Installation:
-Conda is required for installation
+Conda is required for installation  <br />
 Create Environment: conda env create -f Metamusic.yml  <br />
 Activate Environment: conda activate Metamusic  <br />
 Run main.py: python main.py  <br />
