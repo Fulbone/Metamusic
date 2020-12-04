@@ -10,9 +10,9 @@ Sometimes it take some time for it to start up, but be patient, it will eventual
 
 ### Installation:
 Conda is required for installation
-Create Environment: conda env create -f Metamusic.yml
-Activate Environment: conda activate Metamusic
-Run main.py: python main.py
+Create Environment: conda env create -f Metamusic.yml\n
+Activate Environment: conda activate Metamusic\n
+Run main.py: python main.py\n
 
 ### Credits:
 ["Trombone PNG Clipart"](http://www.pngall.com/?p=8265) by [PNG All](http://www.pngall.com/) is licensed under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/)
