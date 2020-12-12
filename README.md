@@ -1,7 +1,7 @@
 ﻿### Metamusic
 
 Licensed under the MIT License.
-Metamusic was a project for the Congressional App Challenge of 2020.
+Metamusic was a project and winner for the Congressional App Challenge of 2020.
 It was created by Jake Fulford and Will Sugden.
 Metamusic is able to tell if one is playing a musical scale correctly.
 It can analyze the bpm and a key of a recording.
