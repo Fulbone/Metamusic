@@ -25,7 +25,7 @@ Run main.py: python main.py  <br />
 
 To our friend Titus, for making the victory, failure, and metronome sounds.
 
-To the GBHS Band Director, for still trying to be the best, even though he can no longer hear us play.
+To our Band Director, for still trying to be the best, even though he can no longer hear us play.
 
 
 
